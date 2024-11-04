@@ -64,8 +64,6 @@ TEMPLATES = [
     },
 ]
 
-# WSGI_APPLICATION = 'hello_application.wsgi.application'
-# ASGI_APPLICATION = 'hello_application.asgi.application'
 WSGI_APPLICATION = 'hello.wsgi.application'
 ASGI_APPLICATION = 'hello.asgi.application'
 
