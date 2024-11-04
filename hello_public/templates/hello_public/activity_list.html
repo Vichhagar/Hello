@@ -1,0 +1,408 @@
+{% extends './base.html' %}
+{% block title %} Activities{% endblock %}
+{% block css %} <link rel="stylesheet" href="/static/css/all_activities.css"> {% endblock %}
+{% block content %}
+    {% include "./navbar.html" %}
+    <main>
+        <div class="head_section">
+            <div class="section_title">
+                All Opening <br>
+                Acitivities
+            </div>
+            <div class="section_number_of_activities">
+                <div class="opening_activities_number">
+                  {% if activities|length > 9 %}
+                    {{ activities|length }}
+                  {% else %}
+                    0{{ activities|length }}
+                  {% endif %}
+                </div>
+                <div class="section_flags">
+                    opening activities
+                </div>
+            </div>
+            <div class="all_activities_actions">
+                <div id="all_activity" class="activity_actions_active">All Activities</div>
+                <div id="all_activity_you_host">You Host</div>
+                <div id="all_activity_you_join">You Join</div>
+            </div>
+        </div>
+
+        <div id="all_activities_list_section">
+          {% for activity in activities %}
+          
+            <div class="activity_card">
+                <div class="activity_card_head">
+                    <div class="activity_organizer_information">
+                        <div class="activity_organizer_img">
+                          {% if activity.activityOrganizer.profileImage %}
+                          <img src="{{ activity.activityOrganizer.profileImage.url }}" alt="">
+                          {% else %}
+                          <img src="/static/img/defualt_user.png" alt="">
+                          {% endif %}
+                        </div>
+                        <div class="activity_organizer_fullname_and_username">
+                            <div class="activity_organizer_fullname">
+                              {% if activity.activityOrganizer.first_name %} {{ activity.activityOrganizer.first_name }} {% else %} Null {% endif %}
+                              {% if activity.activityOrganizer.last_name %} {{ activity.activityOrganizer.last_name }} {% else %} Null {% endif %}
+                              {% if activity.activityOrganizer.userType == 'official' %} 
+                                  <img src="/static/img/official.png" alt="">
+                              {% endif %}
+                            </div>
+                            <div class="activity_organizer_username">
+                                @{{ activity.activityOrganizer.username }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="activity_timesince">
+                      {{ activity.activityCreateDate|timesince }} <br>
+                      <span class="ago">ago</span>
+                    </div>
+                </div>
+                <div class="activity_card_body">
+                    <div class="activity_informations">
+                        <div class="activity_date">
+                            {{ activity.activityDate|date:"d F Y" }}
+                        </div>
+                        <div class="activity_location">
+                          {{ activity.activityLocation }}
+                        </div>
+                        <div class="activity_name">
+                          {{ activity.activityTitle }}
+                        </div>
+                        <div class="activity_particepation_list">
+                            <div class="particepation_title">
+                                Particepace's List
+                            </div>
+                            <div class="particepation_user_preview">
+                              {% for p in activity.participants %}
+                                <div class="particapation_user_img">
+                                    {% if p.userId.profileImage %}
+                                    <img src="{{ p.userId.profileImage.url }}" alt="">
+                                    {% else %}
+                                    <img src="/static/img/defualt_user.png" alt="">
+                                    {% endif %}
+                                </div>
+                              {% empty %}
+                              <p>-</p>
+                              {% endfor %}
+
+
+                                <div class="paticepation_extra">
+                                  {% if activity.num_participants %}
+                                    +{{ activity.num_participants }}
+                                  {% endif %}
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="activity_actions">
+
+                        <div class="activity_status">
+                            <div class="activity_dot"></div>
+                            Open until {{ activity.activityCloseDate|date:"d F Y" }}
+                        </div>
+                        <div class="activity_notification_notice">
+                            You will be notify one day before the start date.
+                        </div>
+                        {% if activity.user_has_joined %}
+                        <div class="activity_join" onclick="leave_activity('{{ activity.id }}')">
+                            Leave
+                        </div>
+                        {% else %}
+                          <div class="activity_join" onclick="join_activity('{{ activity.id }}')">
+                            Join Now
+                          </div>
+                        {% endif %}
+                        <a href="{% url 'hello_public:activity_detail' activity.id %}" class="activity_more_info">
+                            More Information
+                        </a>
+
+                    </div>
+                </div>
+            </div>
+          {% empty %}
+            <p>No activities found.</p>
+          {% endfor %}
+        </div>
+
+        <div id="all_activities_list_section_you_host">
+          {% for activity in activities_hosted %}
+          
+            <div class="activity_card">
+                <div class="activity_card_head">
+                    <div class="activity_organizer_information">
+                        <div class="activity_organizer_img">
+                            
+                            {% if activity.activityOrganizer.profileImage %}
+                            <img src="{{ activity.activityOrganizer.profileImage.url }}" alt="">
+                            {% else %}
+                            <img src="/static/img/defualt_user.png" alt="">
+                            {% endif %}
+                        </div>
+                        <div class="activity_organizer_fullname_and_username">
+                            <div class="activity_organizer_fullname">
+                              {% if activity.activityOrganizer.first_name %} {{ activity.activityOrganizer.first_name }} {% else %} Null {% endif %}
+                              {% if activity.activityOrganizer.last_name %} {{ activity.activityOrganizer.last_name }} {% else %} Null {% endif %}
+                              {% if activity.activityOrganizer.userType == 'official' %} 
+                                  <img src="/static/img/official.png" alt="">
+                              {% endif %}
+                            </div>
+                            <div class="activity_organizer_username">
+                                @{{ activity.activityOrganizer.username }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="activity_timesince">
+                      {{ activity.activityCreateDate|timesince }} <br>
+                      <span class="ago">ago</span>
+                    </div>
+                </div>
+                <div class="activity_card_body">
+                    <div class="activity_informations">
+                        <div class="activity_date">
+                            {{ activity.activityDate|date:"d F Y" }}
+                        </div>
+                        <div class="activity_location">
+                          {{ activity.activityLocation }}
+                        </div>
+                        <div class="activity_name">
+                          {{ activity.activityTitle }}
+                        </div>
+                        <div class="activity_particepation_list">
+                            <div class="particepation_title">
+                                Particepace's List
+                            </div>
+                            <div class="particepation_user_preview">
+                              {% for p in activity.participants %}
+                                <div class="particapation_user_img">
+                                    <img src="{{ p.userId.profileImage.url }}" alt="">
+                                </div>
+                              {% empty %}
+                              <p>-</p>
+                              {% endfor %}
+
+
+                                <div class="paticepation_extra">
+                                  {% if activity.num_participants %}
+                                    +{{ activity.num_participants }}
+                                  {% endif %}
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="activity_actions">
+
+                        <div class="activity_status">
+                            <div class="activity_dot"></div>
+                            Open until {{ activity.activityCloseDate|date:"d F Y" }}
+                        </div>
+                        <div class="activity_notification_notice">
+                            You will be notify one day before the start date.
+                        </div>
+                        {% if activity.user_has_joined %}
+                        <div class="activity_join" onclick="leave_activity('{{ activity.id }}')">
+                            Leave
+                        </div>
+                        {% else %}
+                          <div class="activity_join" onclick="join_activity('{{ activity.id }}')">
+                            Join Now
+                          </div>
+                        {% endif %}
+                        <a href="{% url 'hello_public:activity_detail' activity.id %}" class="activity_more_info">
+                            More Information
+                        </a>
+
+                    </div>
+                </div>
+            </div>
+          {% empty %}
+            <p>No activities found.</p>
+          {% endfor %}
+        </div>
+
+        <div id="all_activities_list_section_you_join">
+          {% for activity in activities_joined %}
+          
+            <div class="activity_card">
+                <div class="activity_card_head">
+                    <div class="activity_organizer_information">
+                        <div class="activity_organizer_img">
+                            {% if activity.activityOrganizer.profileImage %}
+                            <img src="{{ activity.activityOrganizer.profileImage.url }}" alt="">
+                            {% else %}
+                            <img src="/static/img/defualt_user.png" alt="">
+                            {% endif %}
+                            
+                        </div>
+                        <div class="activity_organizer_fullname_and_username">
+                            <div class="activity_organizer_fullname">
+                              {% if activity.activityOrganizer.first_name %} {{ activity.activityOrganizer.first_name }} {% else %} Null {% endif %}
+                              {% if activity.activityOrganizer.last_name %} {{ activity.activityOrganizer.last_name }} {% else %} Null {% endif %}
+                              {% if activity.activityOrganizer.userType == 'official' %} 
+                                  <img src="/static/img/official.png" alt="">
+                              {% endif %}
+                            </div>
+                            <div class="activity_organizer_username">
+                                @{{ activity.activityOrganizer.username }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="activity_timesince">
+                      {{ activity.activityCreateDate|timesince }} <br>
+                      <span class="ago">ago</span>
+                    </div>
+                </div>
+                <div class="activity_card_body">
+                    <div class="activity_informations">
+                        <div class="activity_date">
+                            {{ activity.activityDate|date:"d F Y" }}
+                        </div>
+                        <div class="activity_location">
+                          {{ activity.activityLocation }}
+                        </div>
+                        <div class="activity_name">
+                          {{ activity.activityTitle }}
+                        </div>
+                        <div class="activity_particepation_list">
+                            <div class="particepation_title">
+                                Particepace's List
+                            </div>
+                            <div class="particepation_user_preview">
+                              {% for p in activity.participants %}
+                                <div class="particapation_user_img">
+                                    {% if p.userId.profileImage %}
+                                    <img src="{{ p.userId.profileImage.url }}" alt="">
+                                    {% else %}
+                                    <img src="/static/img/defualt_user.png" alt="">
+                                    {% endif %}
+                                </div>
+                              {% empty %}
+                              <p>-</p>
+                              {% endfor %}
+
+
+                                <div class="paticepation_extra">
+                                  {% if activity.num_participants %}
+                                    +{{ activity.num_participants }}
+                                  {% endif %}
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="activity_actions">
+
+                        <div class="activity_status">
+                            <div class="activity_dot"></div>
+                            Open until {{ activity.activityCloseDate|date:"d F Y" }}
+                        </div>
+                        <div class="activity_notification_notice">
+                            You will be notify one day before the start date.
+                        </div>
+                        <div class="activity_join" onclick="leave_activity('{{ activity.id }}')">
+                            Leave
+                        </div>
+                        <a href="{% url 'hello_public:activity_detail' activity.id %}" class="activity_more_info">
+                            More Information
+                        </a>
+
+                    </div>
+                </div>
+            </div>
+          {% empty %}
+            <p>No activities found.</p>
+          {% endfor %}
+        </div>
+
+    </main>
+{% endblock %}
+{% block script %}
+<script>
+  const join_activity = (id) => {
+    $.ajax({
+        url: `/activity/${id}/join/`,
+        type: 'POST',
+        data: {
+            csrfmiddlewaretoken: getCookie('csrftoken')
+        },
+        success: function(response) {
+            // Replace the contents of the post details div with the response HTML
+            // $('#post-details').html(response);
+            if(response.success) {
+                window.location.reload();
+            }
+        },
+        error: function(xhr) {
+            // Handle errors here
+            console.log(xhr)
+        }
+    })
+  }
+
+  const leave_activity = (id) => {
+    $.ajax({
+        url: `/activity/${id}/leave/`,
+        type: 'POST',
+        data: {
+            csrfmiddlewaretoken: getCookie('csrftoken')
+        },
+        success: function(response) {
+            // Replace the contents of the post details div with the response HTML
+            // $('#post-details').html(response);
+            if(response.success) {
+                window.location.reload();
+            }
+        },
+        error: function(xhr) {
+            // Handle errors here
+            console.log(xhr)
+        }
+    })
+  }
+
+  const all_activities_button = document.getElementById('all_activity');
+  const you_host_button = document.getElementById('all_activity_you_host');
+  const you_join_button = document.getElementById('all_activity_you_join');
+
+  const all_activities = document.getElementById('all_activities_list_section');
+  const activities_you_host = document.getElementById('all_activities_list_section_you_host');
+  const activities_you_join = document.getElementById('all_activities_list_section_you_join');
+
+  all_activities_button.addEventListener('click', () => {
+    all_activities.style.display = 'block';
+    all_activities_button.classList.add('activity_actions_active')
+
+    activities_you_host.style.display = 'none';
+    you_host_button.classList.remove('activity_actions_active')
+    
+    activities_you_join.style.display = 'none';
+    you_join_button.classList.remove('activity_actions_active')
+  })
+
+  you_host_button.addEventListener('click', () => {
+    all_activities.style.display = 'none';
+    all_activities_button.classList.remove('activity_actions_active')
+
+    activities_you_host.style.display = 'block';
+    you_host_button.classList.add('activity_actions_active')
+
+    activities_you_join.style.display = 'none';
+    you_join_button.classList.remove('activity_actions_active')
+  })
+
+  you_join_button.addEventListener('click', () => {
+    all_activities.style.display = 'none';
+    all_activities_button.classList.remove('activity_actions_active')
+
+    activities_you_host.style.display = 'none';
+    you_host_button.classList.remove('activity_actions_active')
+
+    activities_you_join.style.display = 'block';
+    you_join_button.classList.add('activity_actions_active')
+  })
+
+</script>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends './base.html' %}
+{% block title %}Login{% endblock %}
+{% block css %} <link rel="stylesheet" href="/static/css/login.css"> {% endblock %}
+{% block content %}
+
+    <main>
+        <div class="info_section">
+            <div class="title">
+                <div class="main_title">Hello.</div>
+                <div class="sub_title">
+                    
+                    {% for m in messages %}       
+                        <div class="message">
+                            <p style="color: red;">#{{ m }}</p>
+                        </div>
+                    {% empty %}
+                        #Login
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="main_form">
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="text">
+                        <input id="username" type="text" placeholder="Username" name="username">
+                    </div>
+                    <div class="text">
+                        <input id="password" type="password" placeholder="Password" name="password">
+                        <span class="password_reset"><a style="color: #111;" href="{% url 'reset_password' %}">Reset password</a></span>
+                    </div>
+    
+                    <input type="submit" id="form_submit" value="Login">
+                    <p class="sing_up">Don't have an account yet? <a style="color: #111;" href="{% url 'hello_public:requestaccount' %}">Signup</a></p>
+                </form>
+            </div>
+        </div>
+        <div class="cover">
+            <!-- <img src="./static/img/background.jpg" alt=""> -->
+        </div>
+    </main>
+{% endblock %}

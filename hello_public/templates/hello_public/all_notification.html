@@ -1,0 +1,90 @@
+{% extends './base.html' %}
+{% block title %} Saved posts{% endblock %}
+{% block css %} <link rel="stylesheet" href="/static/css/all_activities.css"> {% endblock %}
+{% block content %}
+    {% include "./navbar.html" %}
+    <main>
+        <div class="head_section">
+            <div class="section_title">
+                All <br>
+                Notifications
+            </div>
+            <div class="section_number_of_activities">
+                <div class="opening_activities_number">
+                  {% if notifications|length > 9 %}
+                    {{ notifications|length }}
+                  {% else %}
+                    0{{ notifications|length }}
+                  {% endif %}
+                </div>
+                <div class="section_flags">
+                    Notifications
+                </div>
+            </div>
+            <div class="all_activities_actions">
+                <!-- <div id="all_activity" class="activity_actions_active">All Activities</div>
+                <div id="all_activity_you_host">You Host</div>
+                <div id="all_activity_you_join">You Join</div> -->
+            </div>
+        </div>
+
+        <div id="all_activities_list_section" style="
+            background-color: var(--white);
+            padding: 1rem;
+            border-radius: 10px;
+        ">
+          {% for notification in notifications %}
+            <a style="color: #111;" 
+            {% if notification.notificationOn == 'post' %} 
+                href='/post/{{ notification.notificationLink }}' 
+            {% elif notification.notificationOn == 'activity' %}
+                href='/activity/{{ notification.notificationLink }}' 
+            {% endif %}
+            
+            class="notification" onclick="change_notification_status('{{notification.id}}')">
+                <div class="notification_from_dp">
+                    {% if notification.notificationSender.profileImage %}
+                    <img src="{{ notification.notificationSender.profileImage.url }}" alt="">
+                    {% endif %}
+                </div>
+                <div class="notification_information">
+                    <div class="notification_from_fullname">
+                        {% if notification.notificationSender.first_name %} {{ notification.notificationSender.first_name }} {% else %} Null {% endif %}
+                        {% if notification.notificationSender.last_name %} {{ notification.notificationSender.last_name }} {% else %} Null {% endif %}
+                        {% if notification.notificationSender.userType == 'official' %} 
+                            <img src="/static/img/official.png" alt="">
+                        {% endif %}
+                    </div>
+                    <div class="notification_message">
+                        {% if notification.notificationType == 'like' %}
+                            Like your post
+                        {% elif notification.notificationType == 'comment' %}
+                            Comment on your post
+                        {% elif notification.notificationType == 'reply' %}
+                            Reply to your comment
+                        {% elif notification.notificationType == 'activity_join' %}
+                            Join your activity
+                        {% elif notification.notificationType == 'report' %}
+                            Report a post.
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="notification_time">
+                    {{ notification.notificationTime }} <br>
+                    ago
+                </div>
+                {% if notification.notificationStatus == 'unread' %}
+                    <div class="new_notification_mark"></div>
+                {% else %}
+                {% endif %}
+                
+            </a>
+          {% empty %}
+            <p>No save post.</p>
+          {% endfor %}
+        </div>
+
+        
+
+    </main>
+{% endblock %}

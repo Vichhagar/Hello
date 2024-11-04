@@ -1,0 +1,35 @@
+{% extends './base.html' %}
+{% block title %}Delete Post{% endblock %}
+{% block css %} <link rel="stylesheet" href="/static/css/delete_model.css"> {% endblock %}
+{% block content %}
+    {% include "./navbar.html" %}
+    <main>
+        <div class="model_body">
+            <div class="profile_img">
+                {% if request.user.profileImage %}
+                <img src="{{ request.user.profileImage.url }}" alt="">
+                {% else %}
+                <img src="/static/img/defualt_user.png" alt="">
+                {% endif %}
+            </div>
+            <div class="model_text">
+                <div class="model_text_title">
+                    Delete post.
+                </div>
+                <div class="model_text_message">
+                    By clicking the "Delete" button, this post will be transferred to the recycle bin for a period of 90 days. During this time, only authorized administrators will have access to the post.
+                </div>
+            </div>
+        </div>
+        <div class="model_footer">
+            <form method="post">
+                {% csrf_token %}
+                <div class="model_actions">
+                    <div class="cancel_delete" onclick="goBack()" >Cancel</div>
+                    <button type="submit" class="confirm_delete">Delete</button>
+                </div>
+
+            </form>
+        </div>
+    </main>
+{% endblock %}

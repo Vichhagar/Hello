@@ -1,0 +1,165 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
+
+:root {
+    --bg-white: #F6F6F6;
+    --white: #ffffff;
+    --dark: #000000;
+    --red:  #FF0000;
+    --blue: #0064DA;
+    --border: #d6d6d6;
+}
+
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter';
+}
+
+body {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--bg-white);
+}
+
+main {
+    background-color: var(--white);
+    width: 50%;
+    border-radius: 10px;
+    padding: 1rem;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.model_body {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.profile_img {
+    width: 200px;
+    height: 200px;
+}
+
+.profile_img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    border: var(--bg-white) 5px solid;
+}
+
+.model_text {
+    width: 65%;
+}
+
+.model_text_title {
+    font-size: 25px;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+.model_text_message {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+.model_footer {
+    display: flex;
+    justify-content: end;
+}
+
+.model_actions {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    font-size: 18px;
+}
+
+.confirm_delete {
+    background-color: var(--dark);
+    color: var(--white);
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.cancel_delete {
+    cursor: pointer;
+}
+
+#first_name, #last_name, #username, #userBio, #old_password, #new_password_1, #new_password_2, #email {
+    height: 30px;
+    border: none;
+    width: auto;
+}
+
+.full_name_edit {
+    width: 100%;
+    display: flex;
+    gap: 10px;
+}
+
+#first_name, #last_name, #email {
+    font-size: 20px;
+    font-weight: bold;
+    text-transform: capitalize;
+    width: 90%;
+}
+
+#username {
+    font-size: 18px;
+    /* font-weight: bold; */
+    margin: 0.5rem 0 1rem 0;
+    padding-left: 0.2rem;
+    height: 25px;
+}
+
+#userBio {
+    font-size: 18px;
+    resize: none;
+    width: 100%;
+}
+
+#profile_image {
+    cursor: pointer;
+}
+
+#old_password {
+    width: 100%;
+}
+
+#old_password, #new_password_1, #new_password_2 {
+    border-bottom: 1px var(--dark) solid;
+    margin-block: 0.5rem;
+    font-size: 16px;
+}
+
+#new_password_1, #new_password_2 {
+    width: 49%;
+}
+
+.new_password {
+    display: flex;
+    justify-content: space-between;
+}
+
+#old_password, #new_password_1, #new_password_2:focus {
+    outline: none;
+}
+
+
+#delete_message {
+    width: 100%;
+    height: 70px;
+    padding: 0.5rem;
+    font-size: 17px;
+    border: 2px solid #111;
+    border-radius: none;
+}

@@ -1,0 +1,178 @@
+<head>
+    <link rel="stylesheet" href="/static/css/nav.css">
+</head>
+<header>
+    <a href="{% url 'hello_admin:home' %}" style="color: #111;" class="logo">Admin.</a>
+    <div class="user_action">
+        <div class="notifications">
+            <img src="/static/img/Vector.png" alt="">
+        </div>
+        <div class="user_profile" onclick="showDropdown()">
+            <img src="/images/{{ request.user.profileImage }}" alt="">
+        </div>
+    </div>
+    <div class="extra_user_action_dropdown">
+        <a href="{% url 'hello_public:user_dashboard' %}" class="view_profile">View Profile</a>
+        <a href="{% url 'hello_public:saved_posts' %}" class="saved_post">Saved</a>
+        <a href="#" class="help_support">Help & Support</a>
+        <a href="#" class="privacy_policy">Privacy Policy</a>
+        {% if request.user.userType == 'moderator' %}
+            <a href="{% url 'hello_public:home' %}" style="font-weight: bolder;"
+                onclick="
+                    window.localStorage.setItem('moderator_page', '0');
+                    window.localStorage.setItem('admin_page', '0');
+                "
+            >Normal User Page</a>
+        {% endif %}
+        {% if request.user.userType == 'admin' %}
+            <a href="{% url 'hello_public:home' %}" style="font-weight: bolder;"
+                onclick="
+                    window.localStorage.setItem('moderator_page', '0');
+                    window.localStorage.setItem('admin_page', '0');
+                "
+            >Normal User Page</a>
+        {% endif %}
+        <a href="{% url 'hello_public:logout' %}" class="logout"
+            onclick="
+                window.localStorage.setItem('moderator_page', '0');
+                window.localStorage.setItem('admin_page', '0');
+            "
+        >Log Out</a>
+    </div>
+
+    <div id="notification_list"></div>
+</header>
+<script src="/static/js/post_actions.js"></script>
+<script>
+    const notificationsElement = document.querySelector('.notifications');
+    const notification_list = document.getElementById('notification_list');
+    
+    const showDropdown = () => {
+        let dropdown = document.getElementsByClassName('extra_user_action_dropdown')[0]
+        if (dropdown.style.display === 'block') {
+            dropdown.style.display = 'none';
+        } else {
+            dropdown.style.display = 'block';
+        }
+    }
+
+    notificationsElement.addEventListener('click', e => {
+        if (notification_list.style.display === 'block') {
+            notification_list.style.display = 'none';
+        } else {
+            notification_list.style.display = 'block';
+        }
+    })
+
+    $.ajax({
+        url: `/get_notification/`,
+        type: 'GET',
+        success: function(response) {
+            data = response.notifications
+            console.log(response.has_unread_notification)
+            // console.log(data)
+            console.log(response.notifications)
+
+            if (response.has_unread_notification) {
+                const style = document.createElement('style');
+                style.textContent = `
+                    .notifications::before {
+                    content: '';
+                    display: block;
+                    position: absolute;
+                    background-color: var(--red);
+                    width: 13px;
+                    height: 13px;
+                    border-radius: 50%;
+                    top: 0;
+                    right: 0;
+                    }
+                `;
+                notificationsElement.appendChild(style);
+            }
+
+            let notification_list_all = null;
+
+            data.forEach(notification => {
+                let notification_message = '';
+                if(notification.notificationType == 'like') {
+                    notification_message = 'Like your post';
+                } 
+                else if(notification.notificationType == 'comment') {
+                    notification_message = 'Comment on your post';
+                }
+                else if(notification.notificationType == 'reply') {
+                    notification_message = 'Reply to your comment';
+                }
+                else if(notification.notificationType == 'new_post') {
+                    notification_message = 'Share a new post';
+                }
+                else if(notification.notificationType == 'activity_join') {
+                    notification_message = 'Join your activity';
+                }
+                else if(notification.notificationType == 'report') {
+                    notification_message = 'Report a post.';
+                }
+
+                let is_official = '';
+                if (notification.isOfficialUser) {
+                    is_official = `
+                    <img src="/static/img/official.png" alt="">
+                    `;
+                }
+
+                let notification_link = '';
+                if(notification.notificationOn == 'post') {
+                    notification_link = '/post/' + notification.notificationLink + '/';
+                }
+                else if(notification.notificationOn == 'activity') {
+                    notification_link = '/activity/' + notification.notificationLink + '/';
+                }
+
+                notification_list_all += `
+                    <a style="color: #111;" href='${notification_link}' class="notification" onclick="change_notification_status(${notification.notificationId})">
+                        <div class="notification_from_dp">
+                            <img src="${notification.senderProfileImage}" alt="">
+                        </div>
+                        <div class="notification_information">
+                            <div class="notification_from_fullname">
+                                ${notification.senderFullName} ${is_official}
+                            </div>
+                            <div class="notification_message">
+                                ${notification_message}
+                            </div>
+                        </div>
+                        <div class="notification_time">
+                            ${notification.notificationTime} <br>
+                            ago
+                        </div>
+                        ${notification.notificationStatus == 'unread' ? '<div class="new_notification_mark"></div>' : ''}
+                        
+                    </a>
+                `;
+            });
+
+            notification_list_all += '<a href="/all_notification/">All Notificaitons</a>'
+
+            notification_list.innerHTML = notification_list_all.slice(4);
+        },
+        error: function(xhr) {
+            // Handle errors here
+        }
+    });
+
+    const change_notification_status = (notification_id) => {
+        $.ajax({
+            url: `/notifications/mark_as_read/${notification_id}/`,
+            type: 'POST',
+            data: {
+                csrfmiddlewaretoken: getCookie('csrftoken')
+            },
+            success: function(response) {
+            },
+            error: function(xhr) {
+                // Handle errors here
+            }
+        })
+    }
+</script>

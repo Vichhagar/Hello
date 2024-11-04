@@ -1,0 +1,122 @@
+{% extends './base.html' %}
+{% block title %} Saved posts{% endblock %}
+{% block css %} <link rel="stylesheet" href="/static/css/all_activities.css"> {% endblock %}
+{% block content %}
+    {% include "./navbar.html" %}
+    <main>
+        <div class="head_section">
+            <div class="section_title">
+                All Posts <br>
+                You Saved
+            </div>
+            <div class="section_number_of_activities">
+                <div class="opening_activities_number">
+                  {% if live_posts|length > 9 %}
+                    {{ live_posts|length }}
+                  {% else %}
+                    0{{ live_posts|length }}
+                  {% endif %}
+                </div>
+                <div class="section_flags">
+                    Saved posts
+                </div>
+            </div>
+            <div class="all_activities_actions">
+                <!-- <div id="all_activity" class="activity_actions_active">All Activities</div>
+                <div id="all_activity_you_host">You Host</div>
+                <div id="all_activity_you_join">You Join</div> -->
+            </div>
+        </div>
+
+        <div id="all_activities_list_section">
+          {% for post in live_posts %}
+          <div class="all_user_posts">
+            <div class="post">
+
+            <div class="post_head">
+                <div class="user_info">
+                    <div class="user_img">
+                        
+                        {% if post.userId.profileImage %}
+                        <img src="{{ post.userId.profileImage.url }}" alt="">
+                        {% else %}
+                        <img src="/static/img/defualt_user.png" alt="">
+                        {% endif %}
+
+                    </div>
+                    <div class="user_full_name">
+                        <a style="color: #111;" href="{% url 'hello_public:other_user_dashboard' post.userId.id %}" class="full_name">
+                            {% if post.userId.first_name %} {{ post.userId.first_name }} {% else %} Null {% endif %}
+                            {% if post.userId.last_name %} {{ post.userId.last_name }} {% else %} Null {% endif %}
+                            {% if post.userId.userType == 'official' %} 
+                                <img src="/static/img/official.png" alt="">
+                            {% endif %}
+                        </a>
+                        <div class="username">
+                            @{{ post.userId.username }}
+                        </div>
+                    </div>
+                </div>
+                <div class="post_date">
+                  {{ post.postDate|timesince }} <br>
+                  <span class="ago">ago</span>
+              </div>
+            </div>
+
+            <div class="post_body" data-post-id="{{ post.id }}" onclick="go_to_post_detail(this)">
+                <p>{{ post.postText }}</p>
+                {% if post.image_set %}
+                    <div class="post_image">
+                        <img src="/images/{{ post.image_set.first.imageLink }}" alt="">
+                        {% if post.image_set.all|length > 1 %}
+                            <div class="extra_image_flag"><span style="
+                                font-size: 15px;
+                                margin-bottom: 100px;
+                                text-align: left;
+                            ">More images</span><br>
+                            <p>+{{ post.image_set.all|length|add:"-1" }}</p></div>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="post_footer">
+                <div class="like_post">
+                    <div class="like_icon" onclick="like_post('{{ post.id }}')">
+                        {% if post.user_has_liked %}
+                            <img src="/static/img/liked.png" alt="">
+                        {% else %}
+                            <img src="/static/img/like.png" alt="">
+                        {% endif %}
+                    </div>
+                    <div class="number">{{ post.num_likes }}</div>
+                </div>
+                <div class="comment_post">
+                    <div class="like_icon">
+                        <img src="/static/img/comment.png" alt="">
+                    </div>
+                    <div class="number">{{ post.num_comments }}</div>
+                </div>
+                <div class="save_post">
+                    <div class="like_icon" onclick="save_post('{{ post.id }}')">
+                        {% if post.user_has_saved %}
+                            <img src="/static/img/saved.png" alt="">
+                        {% else %}
+                            <img src="/static/img/save.png" alt="">
+                        {% endif %}
+                    </div>
+                    <div class="number">{{ post.num_saves }}</div>
+                </div>
+            </div>
+            </div>
+          </div>
+          {% empty %}
+            <p>No save post.</p>
+          {% endfor %}
+        </div>
+
+        
+
+    </main>
+{% endblock %}
+

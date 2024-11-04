@@ -1,0 +1,135 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
+
+:root {
+    --bg-white: #F6F6F6;
+    --white: #ffffff;
+    --dark: #000000;
+    --red:  #FF0000;
+    --blue: #0064DA;
+    --border: #d6d6d6;
+}
+
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter';
+}
+
+body {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--bg-white);
+}
+
+main {
+    position: absolute;
+    width: 65%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    justify-content: space-between;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0px 0px 100px 11px rgba(0, 0, 0, 0.1);
+}
+
+.cover_information {
+    background-image: url('../img/background.jpg');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: auto 100%;
+    width: 35%;
+    border-radius: 10px 0 0 10px;
+    padding: .5rem;
+}
+
+.close_add_activity img {
+    width: 2vw
+}
+
+.add_activity_main_section {
+    width: 65%;
+    /* background-color: #0064DA; */
+    padding: 2rem 1rem;
+    border-radius: 0px 10px 10px 0px;
+}
+
+.user_information {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-block-end: 1rem;
+}
+
+.user_profile {
+    width: 50px;
+}
+
+.user_profile img {
+    width: 100%;
+    border-radius: 50%;
+}
+
+.full_name {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+input {
+    height: 3vh;
+    padding-left: 5px;
+    width: 49%;
+    border: none;
+    border-bottom: #000000 solid 1px;
+    margin-block: 0.5rem;
+}
+
+input:focus {
+    outline: none;
+}
+
+#activity_location {
+    width: 100%;
+}
+
+textarea {
+    margin-block: 0.5rem;
+    height: 20vh;
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #000000;
+    border-radius: 5px;
+}
+
+.activity_name_and_activity_date {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+#add_activity {
+    height: 4vh;
+    color: var(--white);
+    background-color: var(--dark);
+    margin-inline: auto;
+    width: 100%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    margin-top: 1rem;
+    padding-block: 1rem;
+    border: 1px var(--dark) solid;
+    transition: background-color ease-in-out 200ms;
+}
+
+#add_activity:hover {
+    color: var(--dark);
+    background-color: var(--white);
+    border: 1px var(--dark) solid;
+}

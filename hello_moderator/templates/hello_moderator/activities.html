@@ -1,0 +1,144 @@
+
+{% extends './base.html' %}
+{% block title %}All activity{% endblock %}
+{% block css %} 
+<link rel="stylesheet" href="/static/css/moderator_dashboard.css">
+{% endblock %}
+{% block content %}
+    {% include "./navbar.html" %}
+    <main>
+        <div class="post_and_activity">
+            <div class="filter_action">
+                <div class="post_filter active_filter" id="activity">Activities</div>
+                <div class="post_filter" id="location">Locations</div>
+            </div>
+            <div class="button_action">
+                <div class="button_title">
+                    Activities
+                </div>
+                <div class="button_summary">
+                    <div class="total_number">{{ activities|length }}</div>
+                    <div class="today_new">{% if recent_activities %}+{{ recent_activities|length }}{% endif %}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="recent_activities_on_app">
+            <!-- <div class="section_title">A Items</div> -->
+            
+            <table id="activity_list">
+                <thead>
+                    <th>Owner</th>
+                    <th>Activity Title</th>
+                    <th>Participant</th>
+                    <th></th>
+                </thead>
+
+                <tbody>
+                    {% for activity in activities %}
+                    <tr>
+                        <td class="user" style="
+                                width: 35%;
+                            ">
+                            <div class="user_information">
+                                <div class="user_frame">
+                                    {% if activity.activityOrganizer.profileImage %}
+                                    <img src="{{ activity.activityOrganizer.profileImage.url }}" alt="">
+                                    {% else %}
+                                    <img src="/static/img/defualt_user.png" alt="">
+                                    {% endif %}
+                                </div>
+                                <div class="user_fullname_and_username">
+                                    <div class="userfullname">
+                                        {% if activity.activityOrganizer.first_name %} {{ activity.activityOrganizer.first_name }} {% else %} Null {% endif %}
+                                        {% if activity.activityOrganizer.last_name %} {{ activity.activityOrganizer.last_name }} {% else %} Null {% endif %}
+                                        {% if activity.activityOrganizer.userType == 'official' %} 
+                                            <img src="/static/img/official.png" alt="">
+                                        {% endif %}
+                                    </div>
+                                    <div class="username">
+                                        @ {{ activity.activityOrganizer.username }}
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td style="width: 40%;">
+                            {{ activity.activityTitle }}
+                        </td>
+                        <td class="item_type" style="width: 20%; padding-left: 15px;">
+                            {{ activity.num_participants  }}
+                        </td>
+                        <td class="item_link" style="
+                            display: flex;
+                            gap: 10px;
+                        ">
+                            <a href="/activity/{{ activity.id }}">view</a>
+                            <a href="{% url 'hello_moderator:delete_activity' activity.id %}">Delete</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <p>No Activity.</p>
+                    {% endfor %}
+                </tbody>
+
+
+            </table>
+            
+            <table id="location_list" style="display: none;">
+                <thead>
+                    <th>ID</th>
+                    <th>Location</th>
+                    <th>Frequency</th>
+                </thead>
+
+                <tbody>
+                    {% for location in locations %}
+                    <tr>
+                        <td class="user" style="width: 10%;">{{ location.id }}</td>
+                        <td style="width: 65%;">
+                            {{ location.location_name }}
+                        </td>
+                        <td class="item_type" style="width: 20%; padding-left: 15px;">
+                            {{ location.frequency  }}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <p>No Activity.</p>
+                    {% endfor %}
+                </tbody>
+
+
+            </table>
+
+        </div>
+    </main>
+{% endblock %}
+
+{% block script %}
+
+        <script>
+        const activity_activities_button = document.getElementById('activity');
+        const location_activities_button = document.getElementById('location');
+
+        const activity_list = document.getElementById('activity_list');
+        const location_list = document.getElementById('location_list');
+
+        // console.log(activity)
+
+        activity_activities_button.addEventListener('click', () => {
+            activity_activities_button.classList.add('active_filter');
+            location_activities_button.classList.remove('active_filter');
+
+            activity_list.style.display = 'block';
+            location_list.style.display = 'none';
+        })
+
+        location_activities_button.addEventListener('click', () => {
+            activity_activities_button.classList.remove('active_filter');
+            location_activities_button.classList.add('active_filter');
+
+            activity_list.style.display = 'none';
+            location_list.style.display = 'block';
+        })
+        </script>
+{% endblock %}

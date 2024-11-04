@@ -1,0 +1,139 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
+
+:root {
+    --bg-white: #F6F6F6;
+    --white: #ffffff;
+    --dark: #000000;
+    --red:  #FF0000;
+    --blue: #0064DA;
+}
+
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter';
+}
+
+body {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--bg-white);
+}
+
+main {
+    position: absolute;
+    width: 65%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    justify-content: space-between;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0px 0px 100px 11px rgba(0, 0, 0, 0.1);
+}
+
+.info_section {
+    width: 50%;
+    padding: 5%;
+}
+
+.title {
+    margin-bottom: 10%;
+}
+
+.main_title {
+    font-size: 2.1vw;
+    font-weight: bolder;
+}
+
+.sub_title {
+    font-size: 1.1vw;
+}
+
+input {
+    border: none;
+    background-color: none;
+    height: 35px;
+    width: 100%;
+    margin-block: 0.5rem;
+    border-bottom: 1px solid #111;
+    font-size: 1.1vw;
+}
+
+input:focus, input:active {
+    /* border: none; */
+    outline: none;
+    /* border-bottom: 1px solid #111; */
+}
+
+
+#username, #password {
+    padding-left: 0.5rem;
+    margin-block: 1rem;
+}
+
+#user_email {
+    text-align: center;
+}
+
+.password_reset {
+    float: right;
+}
+
+#form_submit {
+    margin-top: 2rem;
+    background-color: #111;
+    color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 200ms ease-in-out;
+    border: none;
+    height: 40px;
+    font-size: 1.1vw;
+    font-weight: bold;
+}
+
+#form_submit:hover {
+    background-color: #fff;
+    color: #111;
+    border: 2px solid #111;
+}
+
+.sing_up {
+    text-align: center;
+}
+
+a {
+    text-decoration: none;
+}
+
+.cover {
+    width: 50%;
+    background-image: url("../img/background.5ee2e51e7cea.jpg");
+    background-position: center;
+    background-size: auto 100%;
+    border-radius: 0 10px 10px 0;
+}
+
+.cover_acc_request {
+    width: 50%;
+    background-image: url("../img/background.5ee2e51e7cea.jpg");
+    background-position: center;
+    background-size: auto 100%;
+    border-radius: 10px 0 0 10px;
+}
+
+.acct_request_form {
+    margin-block: 4.5rem;
+}
+
+/* .message {
+    position: absolute;
+    bottom: 0;
+    text-align: center;
+    left: 50%;
+    transform: translateX(-50%);
+} */

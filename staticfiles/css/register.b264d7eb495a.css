@@ -1,0 +1,172 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
+
+:root {
+    --bg-white: #F6F6F6;
+    --white: #ffffff;
+    --dark: #000000;
+    --red:  #FF0000;
+    --blue: #0064DA;
+}
+
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter';
+}
+
+body {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--bg-white);
+}
+
+main {
+    position: absolute;
+    width: 65%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    justify-content: space-between;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0px 0px 100px 11px rgba(0, 0, 0, 0.1);
+}
+
+.info_section {
+    width: 50%;
+    padding-inline: 5%;
+    padding-block: 2%;
+}
+
+.title {
+    margin-bottom: 5%;
+}
+
+.main_title {
+    font-size: 2.1vw;
+    font-weight: bolder;
+}
+
+.sub_title {
+    font-size: 1.1vw;
+}
+
+input {
+    border: none;
+    background-color: none;
+    height: 35px;
+    width: 100%;
+    margin-block: 0rem;
+    border-bottom: 1px solid #111;
+    font-size: 1.1vw;
+}
+
+input:focus, input:active {
+    /* border: none; */
+    outline: none;
+}
+
+#username, #password, #first_name, #last_name, #confirm_password {
+    padding-left: 0.5rem;
+    margin-block: 0.5rem;
+}
+
+#user_email {
+    text-align: center;
+}
+
+.password_reset {
+    float: right;
+}
+
+#form_submit {
+    margin-top: 1rem;
+    background-color: #111;
+    color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 200ms ease-in-out;
+    border: none;
+    height: 40px;
+    font-size: 1.1vw;
+    font-weight: bold;
+}
+
+#form_submit:hover {
+    background-color: #fff;
+    color: #111;
+    border: 2px solid #111;
+}
+
+#form_submit[disabled] {
+    opacity: 0.5; /* Set the opacity to 0.5 when button is disabled */
+    cursor: not-allowed; /* Set the cursor to not-allowed when button is disabled */
+    pointer-events: none; /* Disable pointer events when button is disabled */
+}
+
+#form_submit[disabled]:hover {
+    background-color: transparent; /* Remove the hover background color when button is disabled */
+    color: #999; /* Set the text color to grey when button is disabled and hovered */
+}
+
+.sing_up {
+    text-align: center;
+    margin-top: 5px;
+}
+
+a {
+    text-decoration: none;
+}
+
+.cover {
+    width: 50%;
+    background-image: url("../img/background.5ee2e51e7cea.jpg");
+    background-position: center;
+    background-size: auto 100%;
+    border-radius: 0 10px 10px 0;
+}
+
+.cover_acc_request {
+    width: 50%;
+    background-image: url("../img/background.5ee2e51e7cea.jpg");
+    background-position: center;
+    background-size: auto 100%;
+    border-radius: 10px 0 0 10px;
+}
+
+.acct_request_form {
+    margin-block: 4.5rem;
+}
+
+
+.full_name {
+    display: flex;
+    justify-content: space-between;
+}
+
+.full_name * {
+    width: 48%;
+}
+
+#policy_check {
+    display: flex;
+    align-items: center;
+    margin-block: 15px;
+}
+
+#policy_check label {
+    margin-left: 10px;
+}
+
+#policy_check_box {
+    display: inline;
+    width: 20px;
+    cursor: pointer;
+}
+
+.link_to_policy {
+    font-size: 13px;
+}

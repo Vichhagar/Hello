@@ -1,0 +1,213 @@
+{% extends './base.html' %}
+{% block title %}Activity Detail{% endblock %}
+{% block css %} 
+    <link rel="stylesheet" href="/static/css/activity_detail.css">
+{% endblock %}
+{% block content %}
+    {% include "./navbar.html" %}
+    <main>
+        <div class="activity_basic_informations">
+            <div class="user_information">
+                <div class="user_image">
+                    {% if activity.activityOrganizer.profileImage %}
+                    <img src="/images/{{ activity.activityOrganizer.profileImage }}" alt="">
+                    {% else %}
+                    <img src="/static/img/defualt_user.png" alt="">
+                    {% endif %}
+                </div>
+                <div class="user_fullname">
+                    <div class="fist_and_last_name">
+                        {% if activity.activityOrganizer.first_name %} {{ activity.activityOrganizer.first_name }} {% else %} Null {% endif %}
+                        {% if activity.activityOrganizer.last_name %} {{ activity.activityOrganizer.last_name }} {% else %} Null {% endif %}
+                        {% if activity.activityOrganizer.userType == 'official' %} 
+                            <img src="/static/img/official.png" alt="">
+                        {% endif %}
+                    </div>
+                    <div class="username">
+                        @{{ activity.activityOrganizer.username }}
+                    </div>
+                </div>
+            </div>
+            <a href="#" onclick="goBack()" class="close_activity_detail_button">
+                <img src="/static/img/close_button.png" alt="">
+            </a>
+        </div>
+        <div class="activity_detail_body">
+            <div class="activity_main_information">
+                <div class="date_and_location">
+                    <div class="data_and_location_section">
+                        {{ activity.activityDate|date:"d F Y" }} <br>
+                        <span class="location">
+                            {{ activity.activityLocation }}
+                        </span>
+                    </div>
+                    <div class="activity_created_time">
+                        {{ activity.activityCreateDate|timesince }} <br>
+                        ago
+                    </div>
+                </div>
+                <div class="activity_title">
+                    {{ activity.activityTitle }}
+                </div>
+                <div class="activity_description">
+                    {{ activity.activityDiscription }}
+                </div>
+
+                {% if already_participated %}
+                    <div id="leave_activity" data-activity-id="{{ activity.id }}" class="join_leave_activity_action">Leave Activity</div>
+                {% else %}
+                    <div id="join_activity" data-activity-id="{{ activity.id }}" class="join_leave_activity_action">Join Activity</div>
+                {% endif %}
+            </div>
+            <div class="discussion_panel">
+                <div class="section_title">Discussion</div>
+                <div class="discussion_area">
+
+                    {% for message in discussion_messages %}
+                    <div class="discussion_main_box">
+                        <div class="user_img_profile">
+                            {% if message.userId.profileImage %}
+                            <img src="/images/{{ message.userId.profileImage }}" alt="">
+                            {% else %}
+                            <img src="/static/img/defualt_user.png" alt="">
+                            {% endif %}
+                        </div>
+                        <div class="main_discussion_text">
+                            <div class="user_full_name">
+                                {% if message.userId.first_name %} {{ message.userId.first_name }} {% else %} Null {% endif %}
+                                {% if message.userId.last_name %} {{ message.userId.last_name }} {% else %} Null {% endif %}
+                                {% if message.userId.userType == 'official' %} 
+                                    <img src="/static/img/official.png" alt="">
+                                {% endif %}
+                            </div>
+                            <div class="discussion_text">
+                                {{ message.message }}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+
+                    <div class="add_new_message">
+                        <div class="logged_in_user_profile">
+                            {% if request.user.profileImage %}
+                            <img src="/images/{{ request.user.profileImage }}" alt="">
+                            {% else %}
+                            <img src="/static/img/defualt_user.png" alt="">
+                            {% endif %}
+                        </div>
+                        <form>
+                            <input type="text" name="message" id="message" placeholder="Write a discussion..." required>
+                            <div id="add_message_to_activity" data-activity-id="{{ activity.id }}">add</div>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+            <div class="paricipants_list_preview">
+
+                <div class="paticipants_section_title">Paticipants</div>
+
+                {% for user in participation_list %}
+                    <div class="paticipant_box">
+                        <div class="paticipant_user_profile">
+                            {% if user.userId.profileImage %}
+                            <img src="/images/{{ user.userId.profileImage }}" alt="">
+                            {% else %}
+                            <img src="/static/img/defualt_user.png" alt="">
+                            {% endif %}
+                        </div>
+                        <div class="paticipant_fullname_username">
+                            <div class="paticipant_fullname">
+                                {% if user.userId.first_name %} {{ user.userId.first_name }} {% else %} Null {% endif %}
+                                {% if user.userId.last_name %} {{ user.userId.last_name }} {% else %} Null {% endif %}
+                                {% if user.userId.userType == 'official' %} 
+                                    <img src="/static/img/official.png" alt="">
+                                {% endif %}
+                            </div>
+                            <div class="paticipant_username">
+                                @{{ user.userId.username }}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+
+            </div>
+        </div>
+    </main>
+    {% endblock %}
+
+    {% block script %}
+    <script src="../../static/js/post_actions.js"></script>
+    <script>
+        $('#join_activity').click((e) => {
+            activity_id = $('#join_activity').attr('data-activity-id');
+            $.ajax({
+                url: `/activity/${activity_id}/join/`,
+                type: 'POST',
+                data: {
+                    csrfmiddlewaretoken: getCookie('csrftoken')
+                },
+                success: function(response) {
+                    // Replace the contents of the post details div with the response HTML
+                    // $('#post-details').html(response);
+                    if(response.success) {
+                        window.location.reload();
+                    }
+                },
+                error: function(xhr) {
+                    // Handle errors here
+                    console.log(xhr)
+                }
+            })
+        })
+
+        $('#leave_activity').click((e) => {
+            activity_id = $('#leave_activity').attr('data-activity-id');
+            $.ajax({
+                url: `/activity/${activity_id}/leave/`,
+                type: 'POST',
+                data: {
+                    csrfmiddlewaretoken: getCookie('csrftoken')
+                },
+                success: function(response) {
+                    // Replace the contents of the post details div with the response HTML
+                    // $('#post-details').html(response);
+                    if(response.success) {
+                        window.location.reload();
+                    }
+                },
+                error: function(xhr) {
+                    // Handle errors here
+                    console.log(xhr)
+                }
+            })
+        })
+
+        $("#add_message_to_activity").click((e) => {
+            activity_id = $('#add_message_to_activity').attr('data-activity-id');
+            message = $('#message').val();
+
+            if(message.length > 0) {
+                $.ajax({
+                    url: `/activity/${activity_id}/add_discussion_message/`,
+                    type: 'POST',
+                    data: {
+                        csrfmiddlewaretoken: getCookie('csrftoken'),
+                        'message': message
+                    },
+                    success: function(response) {
+                        // Replace the contents of the post details div with the response HTML
+                        // $('#post-details').html(response);
+                        if(response.success) {
+                            window.location.reload();
+                        }
+                    },
+                    error: function(xhr) {
+                        // Handle errors here
+                        console.log(xhr)
+                    }
+                })
+            }
+        })
+    </script>
+    {% endblock %}

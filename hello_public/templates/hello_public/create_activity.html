@@ -1,0 +1,127 @@
+{% extends './base.html' %}
+{% block title %}Create Activity{% endblock %}
+{% block css %} <link rel="stylesheet" href="/static/css/create_activity.css"> {% endblock %}
+{% block content %}
+{% include "./navbar.html" %}
+{% if form.errors %}
+<div class="errors" style="
+    position: absolute;
+    width: 65%;
+    top: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 999;
+    background-color: red;
+    padding: 0.5rem;
+    color: #fff;
+    font-weight: bold;
+    border-radius: 5px;
+">
+
+
+        {% for field in form %}
+            {% for error in field.errors %}
+                <div class="error" style="margin-block: 0.3rem;">{{ error }}</div>
+            {% endfor %}
+        {% endfor %}
+
+   
+
+</div>
+{% endif %}
+    <main>
+
+
+
+
+        <div class="cover_information">
+            <a href="#" onclick="goBack()"  class="close_add_activity">
+                <img src="/static/img/close_button.png" alt="">
+            </a>
+        </div>
+
+        <div class="add_activity_main_section">
+            <div class="user_information">
+                <div class="user_profile_act">
+                    {% if request.user.profileImage %}
+                    <img src="/images/{{ request.user.profileImage }}" alt="">
+                    {% else %}
+                    <img src="/static/img/defualt_user.png" alt="">
+                    {% endif %}
+                </div>
+                <div class="user_fullname_and_username">
+                    <div class="full_name">
+                        {% if request.user.first_name %} {{ request.user.first_name }} {% else %} Null {% endif %}
+                        {% if request.user.last_name %} {{ request.user.last_name }} {% else %} Null {% endif %}
+                        {% if request.user.userType == 'official' %} 
+                            <img src="/static/img/official.png" alt="">
+                        {% endif %}
+                    </div>
+                    <div class="username">
+                        @{{ request.user.username }}
+                    </div>
+                </div>
+            </div>
+            <div class="main_add_activity_form">
+                <form method="POST" id="add_activity_form">
+                    {% csrf_token %}
+                    <div class="activity_name_and_activity_date">
+                        <input type="text" name="activityTitle" id="activity_name" placeholder="Activity Name">
+                        <input type="datetime" name="activityDate" id="activity_date" placeholder="Activity Date" onfocus="(this.type='datetime-local')">
+                    </div>
+
+                    <input list="suggestions" name="activityLocation" id="activity_location" placeholder="Activity Location" 
+                        style="
+                            position: relative;
+                            z-index: 2;
+                        "
+                    ><br>
+                    <datalist id="suggestions"
+                        style="
+                            position: relative;
+                            z-index: 10;
+                            display: block !important;
+                            /* background-color: aqua; */
+                        "
+                    ></datalist>
+
+                    <textarea name="activityDiscription" id="activity_description" placeholder="Write your activity description here..."></textarea>
+                    <div class="activity_opening_and_close">
+                        <input type="datetime" name="activityOpenDate" id="activity_open" placeholder="Open Date" onfocus="(this.type='datetime-local')">
+                        <input type="datetime" name="activityCloseDate" id="activity_close" placeholder="Close Date" onfocus="(this.type='datetime-local')">
+                    </div>
+
+                    <input type="submit" id="add_activity" value="Post Activity">
+                </form>
+            </div>
+        </div>
+    </main>
+{% endblock %}
+
+{% block script %}
+    <script src="/static/js/post_actions.js"></script>
+    <script>
+        const input = document.getElementById('activity_location');
+        const datalist = document.getElementById('suggestions');
+
+        input.addEventListener('input', () => {
+        const value = input.value;
+
+        // Fetch suggestions from server
+        fetch(`/activity_location_suggestions?query=${value}`)
+            .then(response => response.json())
+            .then(data => {
+            // Clear existing options
+            datalist.innerHTML = '';
+
+            // Add new options
+            data.suggestions.forEach(suggestion => {
+                const option = document.createElement('option');
+                option.value = suggestion;
+                datalist.appendChild(option);
+            });
+            });
+        });
+
+    </script>
+{% endblock %}

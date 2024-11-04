@@ -1,0 +1,146 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
+
+:root {
+    --bg-white: #F6F6F6;
+    --white: #ffffff;
+    --dark: #000000;
+    --red:  #FF0000;
+    --blue: #0064DA;
+    --boder: #D6D6D6;
+}
+
+body {
+    background-color: var(--bg-white);
+}
+
+main {
+    width: 50%;
+    /* margin-inline: auto; */
+    margin-top: 7%;
+}
+
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter';
+}
+
+.post {
+    margin-block: 5%;
+    width: 100%;
+    padding: 2% 0;
+    background-color: var(--white);
+    border-radius: 5px;
+    margin-left: 20%;
+}
+
+.post_head {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    padding-inline: 2%;
+}
+
+.full_name {
+    font-weight: bold;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+}
+
+.full_name img {
+    margin-left: 5px;
+}
+
+.ago {
+    font-size: 14px;
+}
+
+.user_info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.user_img {
+    width: 50px;
+    height: 50px;
+}
+
+.user_img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.post_body {
+    font-size: 17px;
+    line-height: 1.3rem;
+    position: relative;
+    cursor: pointer;
+}
+
+.post_body p {
+    margin-block: 2%;
+    padding-inline: 2%;
+}
+
+.post_body .post_image {
+    width: 100%;
+}
+
+.post_body .post_image img{
+    width: 100%;
+    object-fit: cover;
+}
+
+.post_body .extra_image_flag {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    right: 0;
+    bottom: 0;
+    padding: 5%;
+    font-size: 5vw;
+    background-color: #111;
+    color: #fff;
+    width: 260px;
+    height: 250px;
+    /* opacity: 0.4; */
+    border-radius: 5px 0 0 0;
+}
+
+.post_footer {
+    display: flex;
+    justify-content: space-between;
+    padding-inline: 10%;
+    align-items: center;
+    border-top: var(--boder) solid 1px;
+}
+
+.post_footer > * {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-top: 10px;
+    cursor: pointer;
+}
+
+#report_informations {
+    position: fixed;
+    top: 20%;
+    right: 2rem;
+    padding: 1rem;
+    border-radius: 5px;
+    background-color: var(--white);
+    max-width: 500px;
+    min-width: 500px;
+}
+
+.report_message {
+    padding-block: 1rem;
+}

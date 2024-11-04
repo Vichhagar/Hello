@@ -1,0 +1,37 @@
+{% extends './base.html' %}
+{% block title %}Request Account{% endblock %}
+{% block css %} <link rel="stylesheet" href="/static/css/login.css"> {% endblock %}
+{% block content %}
+
+    <main>
+        
+        <div class="cover_acc_request">
+            <!-- <img src="./static/img/background.jpg" alt=""> -->
+        </div>
+        <div class="info_section">
+            <div class="title">
+                <div class="main_title">Hello.</div>
+                <div class="sub_title">                    
+                {% for m in messages %}       
+                    <div class="message">
+                        <p style="color: red;">#{{ m }}</p>
+                    </div>
+                {% empty %}
+                    #Account Request
+                {% endfor %}</div>
+            </div>
+
+            <div class="main_form acct_request_form">
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="text">
+                        <input id="email" type="text" placeholder="Asia-Pacific International University Email" name="email">
+                    </div>
+    
+                    <input type="submit" id="form_submit" value="Get Signup Link">
+                    <p class="sing_up">Already have an account? <a style="color: #111;" href="{% url 'hello_public:login' %}">Login</a></p>
+                </form>
+            </div>
+        </div>
+    </main>
+{% endblock %}

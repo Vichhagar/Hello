@@ -1,0 +1,696 @@
+{% extends './base.html' %}
+{% block title %}Post{% endblock %}
+{% block css %} 
+    <link rel="stylesheet" href="/static/css/postDetail.css">
+{% endblock %}
+{% block content %}
+{% include "./navbar.html" %}
+    <main>
+        <div class="images_section">
+            <a class="close_button" href="#" onclick="goBack()">
+                <img src="/static/img/close_button.png" alt="">
+            </a>
+
+            <div class="post_img">
+                {% for image in images %}
+                    <img src="{{ image.imageLink.url }}" alt="">
+                {% endfor %}
+            </div>
+
+            <div class="img_changer_icon">
+                {% for image in images %}
+                    <div class="button_with_uri" data-img-url="{{ image.imageLink.url }}"></div>
+                {% endfor %}
+            </div>
+
+        </div>
+        <div class="post_informations">
+            <div class="top_informations">
+                <div class="user_informations">
+                    <div class="user_profile_post_detail">
+                        {% if post.postType != 'anonymous' %}
+                            
+                            {% if post.userId.profileImage %}
+                            <img src="/images/{{ post.userId.profileImage }}" alt="">
+                            {% else %}
+                            <img src="/static/img/defualt_user.png" alt="">
+                            {% endif %}
+
+                        {% else %}
+                            <img src="/static/img/dark.png" alt="">
+                        {% endif %}
+                    </div>
+                    <div class="users">
+                        <div class="user_full_name">
+                            {% if post.postType != 'anonymous' %}
+                                {% if post.userId.first_name %} {{ post.userId.first_name }} {% else %} Null {% endif %}
+                                {% if post.userId.last_name %} {{ post.userId.last_name }} {% else %} Null {% endif %}
+                                {% if post.userId.userType == 'official' %} 
+                                    <img src="/static/img/official.png" alt="">
+                                {% endif %}
+                            {% else %}
+                                Anonymous Post
+                            {% endif %}
+                        </div>
+                        <div class="username">
+                            {% if post.postType != 'anonymous' %}
+                                @{{ post.userId.username }}
+                            {% else %}
+                                @ Anonymous Post
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="post_datetime">
+                    {{ post.postDate|timesince }} <br>
+                    <span class="ago">ago</span>
+                </div>
+            </div>
+            <div class="post_text">
+                {{ post.postText }}
+            </div>
+            <div class="post_actions">
+                <div class="like_post">
+                    <div class="like_icon" onclick="like_post('{{ post.id }}')">
+                        {% if post.user_has_liked %}
+                            <img src="/static/img/liked.png" alt="">
+                        {% else %}
+                            <img src="/static/img/like.png" alt="">
+                        {% endif %}
+                    </div>
+                    <div class="number">{{ post.num_likes }}</div>
+                </div>
+                <div class="comment_post">
+                    <div class="like_icon">
+                        <img src="/static/img/comment.png" alt="">
+                    </div>
+                    <div class="number">{{ post.num_comments }}</div>
+                </div>
+                <div class="save_post">
+                    <div class="like_icon"  onclick="save_post('{{ post.id }}')">
+                        {% if post.user_has_saved %}
+                            <img src="/static/img/saved.png" alt="">
+                        {% else %}
+                            <img src="/static/img/save.png" alt="">
+                        {% endif %}
+                    </div>
+                    <div class="number">{{ post.num_saves }}</div>
+                </div>
+            </div>
+
+            <div class="comments_area">
+                {% for comment in comments %}
+                    <div class="comment">
+                        <div class="user_comment_profile">
+                                                        
+                            {% if comment.userId.profileImage %}
+                            <img src="/images/{{ comment.userId.profileImage }}" alt="">
+                            {% else %}
+                            <img src="/static/img/defualt_user.png" alt="">
+                            {% endif %}
+
+
+                        </div>
+                        <div class="main_comment">
+                            <div class="user_comment_full_name">
+                                <div>
+                                    {% if comment.userId.first_name %} {{ comment.userId.first_name }} {% else %} Null {% endif %}
+                                    {% if comment.userId.last_name %} {{ comment.userId.last_name }} {% else %} Null {% endif %}
+                                    {% if comment.userId.userType == 'official' %} 
+                                        <img src="/static/img/official.png" alt="">
+                                    {% endif %}
+                                </div>
+                                <div class="my_comment_actions">
+                                    {% if comment.userId.id == request.user.id %}
+                                        <div class="edit_comment_button" data-comment-id="{{ comment.id }}">edit</div>
+                                        <div class="delete_comment_button" data-comment-id="{{ comment.id }}">delete</div>
+                                    {% elif request.user.userType == 'moderator' %}
+                                        <div class="moderator_delete_comment_button" data-comment-id="{{ comment.id }}">delete</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="comment_text">
+                                {{ comment.commmentText }}
+                            </div>
+                            {% if post.disable_comment %}
+                            {% else %}
+                            <div class="add_reply_button">reply</div>
+                            {% endif %}
+                        </div>
+
+                    </div>
+
+                    <div class="comment_reply_area">
+                        <div class="reply_comment_input">
+                            <div class="user_comment_profile">
+                                
+                                {% if request.user.profileImage %}
+                                <img src="/images/{{ request.user.profileImage }}" alt="">
+                                {% else %}
+                                <img src="/static/img/defualt_user.png" alt="">
+                                {% endif %}
+
+                            </div>
+                            <div class="main_comment">
+                                <form class="add_reply_form">
+                                    {% csrf_token %}
+                                    <input type="text" name="replyText" id="replyText" placeholder="Add a reply"/>
+                                    <button id="add_reply_{{ comment.id }}">Reply</button>
+                                </form>
+                            </div>
+                        </div>
+                        {% for reply in comment.reply_set.all %}
+                        <div class="reply_comment">
+                            <div class="user_comment_profile">
+                                
+                                {% if reply.userId.profileImage %}
+                                <img src="/images/{{ reply.userId.profileImage }}" alt="">
+                                {% else %}
+                                <img src="/static/img/defualt_user.png" alt="">
+                                {% endif %}
+
+                            </div>
+                            <div class="main_comment">
+                                <div class="user_comment_full_name">
+                                    <div>
+                                        {% if reply.userId.first_name %} {{ reply.userId.first_name }} {% else %} Null {% endif %}
+                                        {% if reply.userId.last_name %} {{ reply.userId.last_name }} {% else %} Null {% endif %}
+                                        {% if reply.userId.userType == 'official' %} 
+                                            <img src="/static/img/official.png" alt="">
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="my_reply_actions">
+                                        {% if reply.userId.id == request.user.id %}
+                                            <div class="edit_reply_button" data-reply-id="{{ reply.id }}">edit</div>
+                                            <div class="delete_reply_button" data-reply-id="{{ reply.id }}">delete</div>
+                                        {% elif request.user.userType == 'moderator' %}
+                                            <div class="moderator_delete_reply_button" data-reply-id="{{ reply.id }}">delete</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+
+                                <div class="comment_text">
+                                    {{ reply.replyText }}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+
+
+                    </div>
+                {% endfor %}
+
+            </div>
+
+            {% if post.disable_comment %}
+            <p style="text-align: center;">Comment is disable for this post.</p>
+            {% else %}
+            <div class="make_comment_input">
+                <div class="user_make_comment">
+                    
+                    {% if request.user.profileImage %}
+                    <img src="/images/{{ request.user.profileImage }}" alt="">
+                    {% else %}
+                    <img src="/static/img/defualt_user.png" alt="">
+                    {% endif %}
+
+                </div>
+                <form class="add_comment_form">
+                    {% csrf_token %}
+                    <input type="text" name="commmentText" id="commmentText" placeholder="Write a comment"/>
+                    <button data-post-id="{{ post.id }}" id="add_comment">Reply</button>
+                </form>
+            </div>
+            {% endif %}
+
+
+
+        </div>
+    </main>
+
+    <div class="main_comment_edit">
+        <div class="close_edit_comment_button">
+            <img src="/static/img/close_button.png" alt="">
+        </div>
+        <div class="comment_edit_overlay"></div>
+        <div class="main_comment_to_edit">
+            <div class="user_edit_comment" id="user_profile_image">
+                
+                {% if request.user.profileImage %}
+                <img src="/images/{{ request.user.profileImage }}" alt="">
+                {% else %}
+                <img src="/static/img/defualt_user.png" alt="">
+                {% endif %}
+
+            </div>
+            <form class="main_comment_to_edit_form" style="width: 100%;">
+                {% csrf_token %}
+                <input type="text" name="commmentText_edit" id="commmentText_edit"/>
+                <button id="done_edit_comment">Done</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="main_reply_edit">
+        <div class="close_edit_comment_button">
+            <img src="/static/img/close_button.png" alt="">
+        </div>
+        <div class="comment_edit_overlay"></div>
+        <div class="main_comment_to_edit">
+            <div class="user_edit_comment" id="user_profile_image">
+                {% if request.user.profileImage %}
+                <img src="/images/{{ request.user.profileImage }}" alt="">
+                {% else %}
+                <img src="/static/img/defualt_user.png" alt="">
+                {% endif %}
+            </div>
+            <form class="main_comment_to_edit_form" style="width: 100%;">
+                {% csrf_token %}
+                <input type="text" name="commmentText_edit" id="commmentText_edit"/>
+                <button id="done_edit_reply">Done</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="main_comment_delete">
+        <div class="close_edit_comment_button">
+            <img src="/static/img/close_button.png" alt="">
+        </div>
+        <div class="comment_edit_overlay"></div>
+        <div class="main_comment_to_edit">
+            <div class="user_edit_comment" id="user_profile_image">
+                {% if request.user.profileImage %}
+                <img src="/images/{{ request.user.profileImage }}" alt="">
+                {% else %}
+                <img src="/static/img/defualt_user.png" alt="">
+                {% endif %}
+            </div>
+            <form class="main_comment_to_edit_form" style="width: 100%;">
+                {% csrf_token %}
+                Are you sure you want to delete this comment?
+                <button id="done_delete_comment">Yes</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="main_reply_delete">
+        <div class="close_edit_comment_button">
+            <img src="/static/img/close_button.png" alt="">
+        </div>
+        <div class="comment_edit_overlay"></div>
+        <div class="main_comment_to_edit">
+            <div class="user_edit_comment" id="user_profile_image">
+                {% if request.user.profileImage %}
+                <img src="/images/{{ request.user.profileImage }}" alt="">
+                {% else %}
+                <img src="/static/img/defualt_user.png" alt="">
+                {% endif %}
+            </div>
+            <form class="main_comment_to_edit_form" style="width: 100%;">
+                {% csrf_token %}
+                Are you sure you want to delete this reply?
+                <button id="done_delete_reply">Yes</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="moderator_delete_comment">
+        <form method="post">
+            {% csrf_token %}
+          <div class="model_body">
+              <div class="model_text" style="width: 100%;">
+                  <div class="model_text_title">
+                      Delete comment.
+                  </div>
+                  <div class="model_text_message">
+                    <textarea id="delete_message" name="why_delete" placeholder="Deletion message..."></textarea>
+                  </div>
+              </div>
+          </div>
+          <div class="model_footer">
+                  <div class="model_actions">
+                      <div class="cancel_delete">Cancel</div>
+                      <button type="submit" id="moderator_done_delete_comment" class="confirm_delete">Delete</button>
+                  </div>
+  
+        </form>
+          </div>
+    </div>
+
+    <div class="moderator_delete_reply">
+        <form method="post">
+            {% csrf_token %}
+          <div class="model_body">
+              <div class="model_text" style="width: 100%;">
+                  <div class="model_text_title">
+                      Delete reply.
+                  </div>
+                  <div class="model_text_message">
+                    <textarea id="delete_message_reply" name="why_delete" placeholder="Deletion message..."></textarea>
+                  </div>
+              </div>
+          </div>
+          <div class="model_footer">
+                  <div class="model_actions">
+                      <div class="cancel_delete">Cancel</div>
+                      <button type="submit" id="moderator_done_delete_reply" class="confirm_delete">Delete</button>
+                  </div>
+  
+        </form>
+          </div>
+    </div>
+
+    <script>
+        // Add reply form toggle
+        const replyForms = document.querySelectorAll('.reply_comment_input');
+        const replyButtons = document.querySelectorAll('.add_reply_button');
+        for (let i = 0; i < replyButtons.length; i++) {
+            replyButtons[i].addEventListener('click', () => {
+                replyForms[i].style.display = 'flex';
+                replyButtons[i].style.display = 'none';
+            });
+        }
+
+        $('#add_comment').click((e) => {
+            e.preventDefault();
+            let comment_text = $('#commmentText').val();
+            const postId = e.target.getAttribute('data-post-id');
+
+            if(comment_text.length <= 0) {
+                alert('error')
+                return
+            }
+
+            $.ajax({
+                url: `/post/${postId}/`,
+                type: 'POST',
+                data: {
+                    'commmentText' : comment_text,
+                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                },
+                success: function(response) {
+                    // Replace the contents of the post details div with the response HTML
+                    // $('#post-details').html(response);
+                    if(response.success) {
+                        window.location.reload();
+                    }
+                },
+                error: function(xhr) {
+                    // Handle errors here
+                }
+            });
+        })
+
+        $('[id^="add_reply_"]').click((e) => {
+            e.preventDefault();
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const postId = urlParams.get('post_id');
+
+            const comment_id = e.target.id.split('add_reply_')[1];
+            const reply_text = e.target.previousElementSibling.value;
+            $.ajax({
+                url: `/post/add_reply/${comment_id}/`,
+                type: 'POST',
+                data: {
+                    'conmmentId' : comment_id,
+                    'replyText' : reply_text,
+                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                },
+                success: function(response) {
+                    console.log(response)
+                    // Replace the contents of the post details div with the response HTML
+                    // $('#post-details').html(response);
+                    if(response.success) {
+                        window.location.reload();
+                    }
+                },
+                error: function(xhr) {
+                    // Handle errors here
+                }
+            });
+        })
+
+        $('.close_edit_comment_button').click(() => {
+            $('.main_comment_edit').css('display', 'none');
+            $('.main_comment_delete').css('display', 'none');
+            $('.main_reply_edit').css('display', 'none');
+            $('.main_reply_delete').css('display', 'none');
+            $('.moderator_delete_comment').css('display', 'none');
+        })
+
+        $('.cancel_delete').click(() => {
+            $('.moderator_delete_comment').css('display', 'none');
+            $('.moderator_delete_reply').css('display', 'none');
+        })
+
+        const post_img_area = document.querySelector('.post_img');
+        const all_images_changer_button = document.querySelectorAll('.button_with_uri');
+        for (let i = 0; i < all_images_changer_button.length; i++) {
+            all_images_changer_button[i].addEventListener('click', (e) => {
+                post_img_area.innerHTML = `
+                    <img src="${e.target.getAttribute('data-img-url')}" alt="">
+                `;
+            });
+        }
+
+        const get_comment = (id) => {
+            $.ajax({
+                url: `/comments/${id}/edit/`,
+                type: 'GET',
+                data: {
+                    'conmmentId' : id,
+                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                },
+                success: function(response) {
+
+                    $(".main_comment_edit #commmentText_edit").val(`${response.text}`);
+                    $('.main_comment_edit').css('display', 'flex');
+                    $('.main_comment_edit #done_edit_comment').attr('data-post-id', id)
+
+                },
+                error: function(xhr) {
+                    // Handle errors here
+                }
+            });
+        }
+
+        // edit_comment_button
+        const edit_comment_button = document.querySelectorAll('.my_comment_actions .edit_comment_button');
+        for (let i = 0; i < edit_comment_button.length; i++) {
+            edit_comment_button[i].addEventListener('click', (e) => {
+                // console.log(e.target.getAttribute('data-comment-id'))
+                get_comment(e.target.getAttribute('data-comment-id'))
+            });
+        }
+
+        // delete_comment_button
+        const delete_comment_button = document.querySelectorAll('.my_comment_actions .delete_comment_button');
+        for (let i = 0; i < delete_comment_button.length; i++) {
+            delete_comment_button[i].addEventListener('click', (e) => {
+                // console.log(e.target.getAttribute('data-comment-id'))
+                // delete_comment(e.target.getAttribute('data-comment-id'))
+                $('.main_comment_delete').css('display', 'flex');
+                $('.main_comment_delete #done_delete_comment').attr('data-post-id', e.target.getAttribute('data-comment-id'))
+            });
+        }
+
+        // moderator_delete_comment_button
+        const moderator_delete_comment_button = document.querySelectorAll('.moderator_delete_comment_button');
+        for (let i = 0; i < moderator_delete_comment_button.length; i++) {
+            moderator_delete_comment_button[i].addEventListener('click', (e) => {
+                // console.log(e.target.getAttribute('data-comment-id'))
+                // delete_comment(e.target.getAttribute('data-comment-id'))
+                $('.moderator_delete_comment').css('display', 'block');
+                $('.moderator_delete_comment #moderator_done_delete_comment').attr('data-comment-id', e.target.getAttribute('data-comment-id'))
+            });
+        }
+
+        $('.moderator_delete_comment #moderator_done_delete_comment').click((e) => {
+            e.preventDefault();
+            $.ajax({
+                url: `/comment/moderator/${e.target.getAttribute('data-comment-id')}/delete/`,
+                type: 'POST',
+                data: {
+                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                    'why_delete': $('#delete_message').val()
+                },
+                success: function(response) {
+                    if(response.success) {
+                        window.location.reload();
+                    }
+                },
+                error: function(xhr) {
+                    // Handle errors here
+                }
+            });
+        })
+
+        // moderator_delete_reply_button
+        const moderator_delete_reply_button = document.querySelectorAll('.moderator_delete_reply_button');
+        for (let i = 0; i < moderator_delete_reply_button.length; i++) {
+            moderator_delete_reply_button[i].addEventListener('click', (e) => {
+                // console.log(e.target.getAttribute('data-comment-id'))
+                // delete_comment(e.target.getAttribute('data-comment-id'))
+                $('.moderator_delete_reply').css('display', 'block');
+                $('.moderator_delete_reply #moderator_done_delete_reply').attr('data-reply-id', e.target.getAttribute('data-reply-id'))
+            });
+        }
+
+        $('.moderator_delete_reply #moderator_done_delete_reply').click((e) => {
+            e.preventDefault();
+            $.ajax({
+                url: `/reply/moderator/${e.target.getAttribute('data-reply-id')}/delete/`,
+                type: 'POST',
+                data: {
+                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                    'why_delete': $('#delete_message_reply').val()
+                },
+                success: function(response) {
+                    if(response.success) {
+                        window.location.reload();
+                    }
+                },
+                error: function(xhr) {
+                    // Handle errors here
+                }
+            });
+        })
+
+        $('.main_comment_delete #done_delete_comment').click((e) => {
+            e.preventDefault();
+            $.ajax({
+                url: `/comments/${e.target.getAttribute('data-post-id')}/delete/`,
+                type: 'POST',
+                data: {
+                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                },
+                success: function(response) {
+                    if(response.success) {
+                        window.location.reload();
+                    }
+                },
+                error: function(xhr) {
+                    // Handle errors here
+                }
+            });
+        })
+
+        $('.main_comment_edit #done_edit_comment').click((e) => {
+            e.preventDefault();
+            $.ajax({
+                url: `/comments/${e.target.getAttribute('data-post-id')}/edit/`,
+                type: 'POST',
+                data: {
+                    'conmmentId' : e.target.getAttribute('data-post-id'),
+                    'new_text' : $("#commmentText_edit").val(),
+                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                },
+                success: function(response) {
+                    if(response.success) {
+                        window.location.reload();
+                    }
+                    // console.log(response)
+                },
+                error: function(xhr) {
+                    // Handle errors here
+                }
+            });
+        })
+
+        
+        // reply actions area
+        
+        const get_reply = (id) => {
+            $.ajax({
+                url: `/reply/${id}/edit/`,
+                type: 'GET',
+                data: {
+                    'conmmentId' : id,
+                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                },
+                success: function(response) {
+
+                    $(".main_reply_edit #commmentText_edit").val(`${response.text}`);
+                    $('.main_reply_edit').css('display', 'flex');
+                    $('.main_reply_edit #done_edit_reply').attr('data-post-id', id)
+                    // $('#done_edit_comment').attr('id', 'done_edit_reply')
+
+                },
+                error: function(xhr) {
+                    // Handle errors here
+                }
+            });
+        }
+        
+        // edit_reply_button
+        const edit_reply_button = document.querySelectorAll('.my_reply_actions .edit_reply_button');
+        for (let i = 0; i < edit_reply_button.length; i++) {
+            edit_reply_button[i].addEventListener('click', (e) => {
+                // console.log(e.target.getAttribute('data-comment-id'))
+                get_reply(e.target.getAttribute('data-reply-id'))
+            });
+        }
+
+        // delete_reply_button
+        const delete_reply_button = document.querySelectorAll('.my_reply_actions .delete_reply_button');
+        for (let i = 0; i < delete_reply_button.length; i++) {
+            delete_reply_button[i].addEventListener('click', (e) => {
+                // console.log(e.target.getAttribute('data-comment-id'))
+                // get_reply(e.target.getAttribute('data-reply-id'))
+                $('.main_reply_delete').css('display', 'flex');
+                $('.main_reply_delete #done_delete_reply').attr('data-post-id', e.target.getAttribute('data-reply-id'))
+            });
+        }
+        
+        $('.main_reply_delete #done_delete_reply').click((e) => {
+            e.preventDefault();
+            $.ajax({
+                url: `/reply/${e.target.getAttribute('data-post-id')}/delete/`,
+                type: 'POST',
+                data: {
+                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                },
+                success: function(response) {
+                    if(response.success) {
+                        window.location.reload();
+                    }
+                    // console.log(response)
+                },
+                error: function(xhr) {
+                    // Handle errors here
+                }
+            });
+        })
+
+        $('.main_reply_edit #done_edit_reply').click((e) => {
+            e.preventDefault();
+            $.ajax({
+                url: `/reply/${e.target.getAttribute('data-post-id')}/edit/`,
+                type: 'POST',
+                data: {
+                    'replyId' : e.target.getAttribute('data-post-id'),
+                    'new_text' : $(".main_reply_edit #commmentText_edit").val(),
+                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                },
+                success: function(response) {
+                    if(response.success) {
+                        window.location.reload();
+                    }
+                    // console.log(response)
+                },
+                error: function(xhr) {
+                    // Handle errors here
+                }
+            });
+        })
+
+    </script>
+
+{% endblock %}
+
+{% block script %}
+    <script src="/static/js/post_actions.js"></script>
+{% endblock %}

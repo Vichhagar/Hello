@@ -1,0 +1,261 @@
+{% extends './base.html' %}
+{% block title %}Home{% endblock %}
+{% block css %} 
+<link rel="stylesheet" href="/static/css/moderator_dashboard.css">
+{% endblock %}
+{% block content %}
+    {% include "./navbar.html" %}
+    <main>
+        <div class="post_and_activity">
+            <div class="button_action">
+                <div class="button_title">
+                    Users
+                </div>
+                <div class="button_summary">
+                    <div class="total_number">{{ all_users|length }}</div>
+                    <div class="today_new">{% if recent_users %}+{{ recent_users|length }}{% endif %}</div>
+                </div>
+            </div>
+            <div class="filter_action">
+                <div class="post_filter active_filter" id="live">Normal</div>
+                <div class="post_filter" id="pending">Official</div>
+                <div class="post_filter" id="deleted">Moderator</div>
+            </div>
+        </div>
+
+        <a href="{% url 'hello_admin:create_user' %}" class="add_new_user" style="
+            background-color: #111;
+            color: #fff;
+            font-size: 17px;
+            font-weight: bold;
+            padding-block: 1rem;
+            text-align: center;
+            border-radius: 10px;
+            margin-top: -2rem;
+            margin-bottom: 2rem;
+            cursor: pointer;
+            display: block;
+        ">
+            Add new user
+        </a>
+
+        <div class="recent_activities_on_app">
+            
+            <table id="live_post">
+                <thead>
+                    <th>ID</th>
+                    <th>User</th>
+                    <th></th>
+                </thead>
+
+                <tbody>
+                    {% for user in normal_users %}
+                    <tr
+                    {% if user.is_banned %}
+                        style="color: rgb(255, 12, 12);"
+                    {% endif %}
+                    >
+                        <td style="width: 5%;">{{ user.id }}</td>
+                        <td class="user" style="
+                                width: 40%;
+                            ">
+                            <div class="user_information">
+                                <div class="user_frame">
+                                    {% if user.profileImage %}
+                                    <img src="{{ user.profileImage.url }}" alt="">
+                                    {% else %}
+                                    <img src="/static/img/defualt_user.png" alt="">
+                                    {% endif %}
+                                </div>
+                                <div class="user_fullname_and_username">
+                                    <div class="userfullname">
+                                        {% if user.first_name %} {{ user.first_name }} {% else %} Null {% endif %}
+                                        {% if user.last_name %} {{ user.last_name }} {% else %} Null {% endif %}
+                                        {% if user.userType == 'official' %} 
+                                            <img src="/static/img/official.png" alt="">
+                                        {% endif %}
+                                    </div>
+                                    <div class="username">
+                                        @ {{ user.username }}
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="item_link" style="
+                            display: flex;
+                            justify-content: end;
+                            gap: 20px;
+                        ">
+                            <a href="/other_dashboard/{{ user.id }}">view</a>
+                            {% if user.is_banned %}
+                                <a href="{% url 'hello_admin:unban_user' user.id %}">unban</a>
+                            {% else %}
+                                <a href="{% url 'hello_admin:ban_user' user.id %}">ban</a>
+                            {% endif %}
+                            
+                            <a href="{% url 'hello_admin:update_role' user.id %}">update role</a>
+                            <a href="{% url 'hello_admin:update_profile' user.id %}">update profile</a>
+                            <a href="{% url 'hello_admin:change_password' user.id %}">update password</a>
+                            <a href="{% url 'hello_admin:delete_user' user.id %}">Delete</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+
+            </table>
+            
+            <table id="pending_post">
+                <thead>
+                    <th>ID</th>
+                    <th>User</th>
+                    <th></th>
+                </thead>
+
+                <tbody>
+                    {% for user in official_users %}
+                    <tr>
+                        <td style="width: 5%;">{{ user.id }}</td>
+                        <td class="user" style="
+                                width: 40%;
+                            ">
+                            <div class="user_information">
+                                <div class="user_frame">
+                                    {% if user.profileImage %}
+                                    <img src="{{ user.profileImage.url }}" alt="">
+                                    {% else %}
+                                    <img src="/static/img/defualt_user.png" alt="">
+                                    {% endif %}
+                                </div>
+                                <div class="user_fullname_and_username">
+                                    <div class="userfullname">
+                                        {% if user.first_name %} {{ user.first_name }} {% else %} Null {% endif %}
+                                        {% if user.last_name %} {{ user.last_name }} {% else %} Null {% endif %}
+                                        {% if user.userType == 'official' %} 
+                                            <img src="/static/img/official.png" alt="">
+                                        {% endif %}
+                                    </div>
+                                    <div class="username">
+                                        @ {{ user.username }}
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="item_link" style="
+                            display: flex;
+                            justify-content: end;
+                            gap: 10px;
+                        ">
+                            <a href="/other_dashboard/{{ user.id }}">view</a>
+                            <a href="{% url 'hello_admin:update_role' user.id %}">update role</a>
+                            <a href="{% url 'hello_admin:update_profile' user.id %}">update profile</a>
+                            <a href="{% url 'hello_admin:change_password' user.id %}">update password</a>
+                            <a href="{% url 'hello_admin:delete_user' user.id %}">Delete</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+
+            </table>
+            
+            <table id="deleted_post">
+                <thead>
+                    <th>ID</th>
+                    <th>User</th>
+                    <th></th>
+                </thead>
+
+                <tbody>
+                    {% for user in moderator_users %}
+                    <tr>
+                        <td style="width: 5%;">{{ user.id }}</td>
+                        <td class="user" style="
+                                width: 40%;
+                            ">
+                            <div class="user_information">
+                                <div class="user_frame">
+                                    {% if user.profileImage %}
+                                    <img src="{{ user.profileImage.url }}" alt="">
+                                    {% else %}
+                                    <img src="/static/img/defualt_user.png" alt="">
+                                    {% endif %}
+                                </div>
+                                <div class="user_fullname_and_username">
+                                    <div class="userfullname">
+                                        {% if user.first_name %} {{ user.first_name }} {% else %} Null {% endif %}
+                                        {% if user.last_name %} {{ user.last_name }} {% else %} Null {% endif %}
+                                        {% if user.userType == 'official' %} 
+                                            <img src="/static/img/official.png" alt="">
+                                        {% endif %}
+                                    </div>
+                                    <div class="username">
+                                        @ {{ user.username }}
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="item_link" style="
+                            display: flex;
+                            justify-content: end;
+                            gap: 10px;
+                        ">
+                            <a href="/other_dashboard/{{ user.id }}">view</a>
+                            <a href="{% url 'hello_admin:update_role' user.id %}">update role</a>
+                            <a href="{% url 'hello_admin:update_profile' user.id %}">update profile</a>
+                            <a href="{% url 'hello_admin:change_password' user.id %}">update password</a>
+                            <a href="{% url 'hello_admin:delete_user' user.id %}">Delete</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+
+            </table>
+
+        </div>
+    </main>
+{% endblock %}
+
+{% block script %}
+<script>
+    const live = document.getElementById('live');
+    const pending = document.getElementById('pending');
+    const deleted = document.getElementById('deleted');
+
+    const live_post = document.getElementById('live_post');
+    const padding_post = document.getElementById('pending_post');
+    const deleted_post = document.getElementById('deleted_post');
+
+    live.addEventListener('click', () => {
+        live.classList.add('active_filter');
+        pending.classList.remove('active_filter');
+        deleted.classList.remove('active_filter');
+
+        live_post.style.display = 'block';
+        padding_post.style.display = 'none';
+        deleted_post.style.display = 'none';
+    })
+
+    pending.addEventListener('click', () => {
+        live.classList.remove('active_filter');
+        pending.classList.add('active_filter');
+        deleted.classList.remove('active_filter');
+
+        live_post.style.display = 'none';
+        padding_post.style.display = 'block';
+        deleted_post.style.display = 'none';
+    })
+
+    deleted.addEventListener('click', () => {
+        live.classList.remove('active_filter');
+        pending.classList.remove('active_filter');
+        deleted.classList.add('active_filter');
+
+        live_post.style.display = 'none';
+        padding_post.style.display = 'none';
+        deleted_post.style.display = 'block';
+    })
+
+</script>
+{% endblock %}

@@ -1,0 +1,429 @@
+{% extends './base.html' %}
+{% block title %}All Post{% endblock %}
+{% block css %} 
+<link rel="stylesheet" href="/static/css/moderator_dashboard.css">
+{% endblock %}
+{% block content %}
+    {% include "./navbar.html" %}
+    <main>
+        <div class="post_and_activity">
+            <div class="filter_action">
+                <div class="post_filter active_filter" id="live">Live</div>
+                <div class="post_filter" id="pending">Pending</div>
+                <div class="post_filter" id="ban">Banned</div>
+                <div class="post_filter" id="deleted">Deleted</div>
+                <div class="post_filter" id="report">Reported</div>
+            </div>
+            <div class="button_action">
+                <div class="button_title">
+                    Posts
+                </div>
+                <div class="button_summary">
+                    <div class="total_number">{{ live_posts|length }}</div>
+                    <div class="today_new">{% if recent_posts %}+{{ recent_posts|length }}{% endif %}</div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="recent_activities_on_app">
+            <div class="section_title">Post Items</div>
+            
+            <table id="live_post">
+                <thead>
+                    <th>Owner</th>
+                    <th>Time</th>
+                    <th>Post Text</th>
+                    <th>Type</th>
+                    <th></th>
+                </thead>
+
+                <tbody>
+                    {% for post in live_posts %}
+                    <tr>
+                        <td class="user" style="
+                                width: 25%;
+                            ">
+                            <div class="user_information">
+                                <div class="user_frame">
+                                    {% if post.userId.profileImage %}
+                                    <img src="{{ post.userId.profileImage.url }}" alt="">
+                                    {% else %}
+                                    <img src="/static/img/defualt_user.png" alt="">
+                                    {% endif %}
+                                </div>
+                                <div class="user_fullname_and_username">
+                                    <div class="userfullname">
+                                        {% if post.userId.first_name %} {{ post.userId.first_name }} {% else %} Null {% endif %}
+                                        {% if post.userId.last_name %} {{ post.userId.last_name }} {% else %} Null {% endif %}
+                                        {% if post.userId.userType == 'official' %} 
+                                            <img src="/static/img/official.png" alt="">
+                                        {% endif %}
+                                    </div>
+                                    <div class="username">
+                                        @ {{ post.userId.username }}
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td style="width: 25%;">{{ post.postDate }}</td>
+                        <td style="width: 40%;">
+                            {% if post.postText|length > 50 %}{{ post.postText|slice:":50" }}...{% else %}{{ post.postText }}{% endif %}
+                        </td>
+                        <td class="item_type" style="width: 20%;">
+                            {{ post.postType }}
+                        </td>
+                        <td class="item_link" style="
+                            display: flex;
+                            gap: 10px;
+                        ">
+                            <a href="/post/{{ post.id }}">view</a>
+                            {% if post.disable_comment %}
+                            <a href="{% url 'hello_moderator:enable_comment' post.id %}">enable comment</a>
+                            {% else %}
+                            <a href="{% url 'hello_moderator:disable_comment' post.id %}">disable comment</a>
+                            {% endif %}
+                            
+                            <a href="{% url 'hello_moderator:ban' post.id %}">ban</a>
+                            <a href="{% url 'hello_moderator:delete_post' post.id %}">Delete</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <p>No Live Post.</p>
+                    {% endfor %}
+                </tbody>
+
+
+            </table>
+
+            <table id="ban_post">
+                <thead>
+                    <th>Owner</th>
+                    <th>Time</th>
+                    <th>Post Text</th>
+                    <th>Type</th>
+                    <th></th>
+                </thead>
+
+                <tbody>
+                    {% for post in ban_posts %}
+                    <tr>
+                        <td class="user" style="
+                                width: 25%;
+                            ">
+                            <div class="user_information">
+                                <div class="user_frame">
+                                    {% if post.userId.profileImage %}
+                                    <img src="{{ post.userId.profileImage.url }}" alt="">
+                                    {% else %}
+                                    <img src="/static/img/defualt_user.png" alt="">
+                                    {% endif %}
+                                </div>
+                                <div class="user_fullname_and_username">
+                                    <div class="userfullname">
+                                        {% if post.userId.first_name %} {{ post.userId.first_name }} {% else %} Null {% endif %}
+                                        {% if post.userId.last_name %} {{ post.userId.last_name }} {% else %} Null {% endif %}
+                                        {% if post.userId.userType == 'official' %} 
+                                            <img src="/static/img/official.png" alt="">
+                                        {% endif %}
+                                    </div>
+                                    <div class="username">
+                                        @ {{ post.userId.username }}
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td style="width: 25%;">{{ post.postDate }}</td>
+                        <td style="width: 40%;">
+                            {% if post.postText|length > 50 %}{{ post.postText|slice:":50" }}...{% else %}{{ post.postText }}{% endif %}
+                        </td>
+                        <td class="item_type" style="width: 20%; padding-left: 15px;">
+                            {{ post.postType }}
+                        </td>
+                        <td class="item_link" style="
+                            display: flex;
+                            gap: 10px;
+                        ">
+                            <a href="{% url 'hello_moderator:unban' post.id %}">unban</a>
+                            <a href="/post/{{ post.id }}">view</a>
+                            <a href="{% url 'hello_moderator:delete_post' post.id %}">Delete</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+
+            </table>
+
+            <table id="pending_post">
+                <thead>
+                    <th>Owner</th>
+                    <th>Time</th>
+                    <th>Post Text</th>
+                    <th>Type</th>
+                    <th></th>
+                </thead>
+
+                <tbody>
+                    {% for post in draft_posts %}
+                    <tr>
+                        <td class="user" style="
+                                width: 25%;
+                            ">
+                            <div class="user_information">
+                                <div class="user_frame">
+                                    {% if post.userId.profileImage %}
+                                    <img src="{{ post.userId.profileImage.url }}" alt="">
+                                    {% else %}
+                                    <img src="/static/img/defualt_user.png" alt="">
+                                    {% endif %}
+                                </div>
+                                <div class="user_fullname_and_username">
+                                    <div class="userfullname">
+                                        {% if post.userId.first_name %} {{ post.userId.first_name }} {% else %} Null {% endif %}
+                                        {% if post.userId.last_name %} {{ post.userId.last_name }} {% else %} Null {% endif %}
+                                        {% if post.userId.userType == 'official' %} 
+                                            <img src="/static/img/official.png" alt="">
+                                        {% endif %}
+                                    </div>
+                                    <div class="username">
+                                        @ {{ post.userId.username }}
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td style="width: 25%;">{{ post.postDate }}</td>
+                        <td style="width: 40%;">
+                            {% if post.postText|length > 50 %}{{ post.postText|slice:":50" }}...{% else %}{{ post.postText }}{% endif %}
+                        </td>
+                        <td class="item_type" style="width: 20%; padding-left: 15px;">
+                            {{ post.postType }}
+                        </td>
+                        <td class="item_link" style="
+                            display: flex;
+                            gap: 10px;
+                        ">
+                            <a href="{% url 'hello_moderator:approve_post' post.id %}">approve</a>
+                            <a href="/post/{{ post.id }}">view</a>
+                            <a href="{% url 'hello_moderator:delete_post' post.id %}">Delete</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+
+            </table>
+
+            <table id="deleted_post">
+                <thead>
+                    <th>Owner</th>
+                    <th>Time</th>
+                    <th>Post Text</th>
+                    <th>Type</th>
+                    <th>Duration</th>
+                    <th></th>
+                </thead>
+
+                <tbody>
+                    {% for post in bin_posts %}
+                    <tr>
+                        <td class="user" style="
+                                width: 20%;
+                            ">
+                            <div class="user_information">
+                                <div class="user_frame">
+                                    {% if post.userId.profileImage %}
+                                    <img src="{{ post.userId.profileImage.url }}" alt="">
+                                    {% else %}
+                                    <img src="/static/img/defualt_user.png" alt="">
+                                    {% endif %}
+                                </div>
+                                <div class="user_fullname_and_username">
+                                    <div class="userfullname">
+                                        {% if post.userId.first_name %} {{ post.userId.first_name }} {% else %} Null {% endif %}
+                                        {% if post.userId.last_name %} {{ post.userId.last_name }} {% else %} Null {% endif %}
+                                        {% if post.userId.userType == 'official' %} 
+                                            <img src="/static/img/official.png" alt="">
+                                        {% endif %}
+                                    </div>
+                                    <div class="username">
+                                        @ {{ post.userId.username }}
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td style="width: 20%;">{{ post.postDate }}</td>
+                        <td style="width: 30%;">
+                            {% if post.postText|length > 50 %}{{ post.postText|slice:":50" }}...{% else %}{{ post.postText }}{% endif %}
+                        </td>
+                        <td class="item_type" style="width: 20%;">
+                            {{ post.postType }}
+                        </td>
+                        <td style="width: 100px;">{{ post.postDate|timesince }}</td>
+                        <td class="item_link" style="
+                            display: flex;
+                            gap: 10px;
+                            width: 10%;
+                        ">
+                            <a href="/post/{{ post.id }}">view</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+
+            </table>
+
+            <table id="report_post">
+                <thead>
+                    <th>Owner</th>
+                    <th>Time</th>
+                    <th>Post Text</th>
+                    <th>Type</th>
+                    <th></th>
+                </thead>
+
+                <tbody>
+                    {% for post in reported_posts %}
+                    <tr>
+                        <td class="user" style="
+                                width: 25%;
+                            ">
+                            <div class="user_information">
+                                <div class="user_frame">
+                                    {% if post.postId.userId.profileImage %}
+                                    <img src="{{ post.postId.userId.profileImage.url }}" alt="">
+                                    {% else %}
+                                    <img src="/static/img/defualt_user.png" alt="">
+                                    {% endif %}
+                                </div>
+                                <div class="user_fullname_and_username">
+                                    <div class="userfullname">
+                                        {% if post.postId.userId.first_name %} {{ post.postId.userId.first_name }} {% else %} Null {% endif %}
+                                        {% if post.postId.userId.last_name %} {{ post.postId.userId.last_name }} {% else %} Null {% endif %}
+                                        {% if post.postId.userId.userType == 'official' %} 
+                                            <img src="/static/img/official.png" alt="">
+                                        {% endif %}
+                                    </div>
+                                    <div class="username">
+                                        @ {{ post.postId.userId.username }}
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td style="width: 25%;">{{ post.postId.postDate }}</td>
+                        <td style="width: 40%;">
+                            {% if post.postId.postText|length > 50 %}{{ post.postId.postText|slice:":50" }}...{% else %}{{ post.postId.postText }}{% endif %}
+                        </td>
+                        <td class="item_type" style="width: 20%; padding-left: 15px;">
+                            {{ post.postId.postType }}
+                        </td>
+                        <td class="item_link" style="
+                            display: flex;
+                            gap: 10px;
+                        ">
+                            <a href="{% url 'hello_moderator:report_detail' post.postId.id %}">view report</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+
+            </table>
+
+        </div>
+    </main>
+{% endblock %}
+
+{% block script %}
+<script>
+    const live = document.getElementById('live');
+    const pending = document.getElementById('pending');
+    const deleted = document.getElementById('deleted');
+    const ban = document.getElementById('ban');
+    const report = document.getElementById('report');
+
+    const live_post = document.getElementById('live_post');
+    const padding_post = document.getElementById('pending_post');
+    const deleted_post = document.getElementById('deleted_post');
+    const ban_post = document.getElementById('ban_post');
+    const report_post = document.getElementById('report_post');
+
+    live.addEventListener('click', () => {
+        live.classList.add('active_filter');
+        pending.classList.remove('active_filter');
+        deleted.classList.remove('active_filter');
+
+        ban.classList.remove('active_filter');
+        ban_post.style.display = 'none';
+
+        report.classList.remove('active_filter');
+        report_post.style.display = 'none';
+
+        live_post.style.display = 'block';
+        padding_post.style.display = 'none';
+        deleted_post.style.display = 'none';
+        
+    })
+
+    pending.addEventListener('click', () => {
+        live.classList.remove('active_filter');
+        pending.classList.add('active_filter');
+        deleted.classList.remove('active_filter');
+
+        live_post.style.display = 'none';
+        padding_post.style.display = 'block';
+        deleted_post.style.display = 'none';
+        ban.classList.remove('active_filter');
+        ban_post.style.display = 'none';
+        report.classList.remove('active_filter');
+        report_post.style.display = 'none';
+    })
+
+    deleted.addEventListener('click', () => {
+        live.classList.remove('active_filter');
+        pending.classList.remove('active_filter');
+        deleted.classList.add('active_filter');
+
+        live_post.style.display = 'none';
+        padding_post.style.display = 'none';
+        deleted_post.style.display = 'block';
+        ban.classList.remove('active_filter');
+        ban_post.style.display = 'none';
+        report.classList.remove('active_filter');
+        report_post.style.display = 'none';
+    })
+
+    ban.addEventListener('click', () => {
+        live.classList.remove('active_filter');
+        pending.classList.remove('active_filter');
+        deleted.classList.remove('active_filter');
+
+        live_post.style.display = 'none';
+        padding_post.style.display = 'none';
+        deleted_post.style.display = 'none';
+
+        ban.classList.add('active_filter');
+        ban_post.style.display = 'block';
+        report.classList.remove('active_filter');
+        report_post.style.display = 'none';
+    })
+
+    report.addEventListener('click', () => {
+        live.classList.remove('active_filter');
+        pending.classList.remove('active_filter');
+        deleted.classList.remove('active_filter');
+
+        live_post.style.display = 'none';
+        padding_post.style.display = 'none';
+        deleted_post.style.display = 'none';
+
+        ban.classList.remove('active_filter');
+        ban_post.style.display = 'none';
+
+        report.classList.add('active_filter');
+        report_post.style.display = 'block';
+    })
+
+</script>
+{% endblock %}

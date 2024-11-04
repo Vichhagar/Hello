@@ -1,0 +1,64 @@
+{% extends './base.html' %}
+{% block title %}Register{% endblock %}
+{% block css %} <link rel="stylesheet" href="/static/css/register.css"> {% endblock %}
+{% block content %}
+
+    <main>
+        
+        <div class="cover_acc_request">
+            <!-- <img src="./static/img/background.jpg" alt=""> -->
+        </div>
+        <div class="info_section">
+            <div class="title">
+                <div class="main_title">Hello.</div>
+                <div class="sub_title">
+                    {% for m in messages %}       
+                        <div class="message">
+                            <p style="color: red;">#{{ m }}</p>
+                        </div>
+                    {% empty %}
+                        #Register
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="main_form">
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="pro-img">
+                        <label for="Image">Profile Image:</label>
+                        <input id="profileImage" type="file" placeholder="image" name="profileImage">
+                    </div>
+                    <div class="full_name">
+                        <input id="first_name" type="text" placeholder="First Name" name="first_name" required>
+                        <input id="last_name" type="text" placeholder="Last Name" name="last_name" required>
+                    </div>
+
+                    <div class="text">
+                        <input id="username" type="text" placeholder="Username" name="username" required>
+                        <input type="text" name="userType" value="normal" hidden>
+                    </div>
+
+                    <div class="text">
+                        <input id="password" type="password" placeholder="Password" name="password1" required>
+                    </div>
+
+                    <div class="text">
+                        <input id="confirm_password" type="password" placeholder="Confirm Password" name="password2" required>
+                    </div>
+
+                    <div class="checkbox" id="policy_check" name="policy_check">
+                        <input type="checkbox" id="policy_check_box" name="policy_check_box" value="yes">
+                        <label for="policy_check_box">Policy Notice <br><span class="link_to_policy"><a href="#">Read the policy privacy</a></span></label>
+                    </div>
+    
+                    <input type="submit" id="form_submit" value="Register" disabled>
+                    <p class="sing_up">Already have an account? <a href="{% url 'hello_public:login' %}">Login</a></p>
+                </form>
+            </div>
+        </div>
+    </main>
+{% endblock %}
+{% block script %}
+    <script src="/static/js/register.js"></script>
+{% endblock %}

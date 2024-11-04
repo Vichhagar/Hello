@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+
+  db:
+    image: mysql:latest
+    environment:
+      MYSQL_DATABASE: hello
+      MYSQL_USER: hello
+      MYSQL_PASSWORD: hello_database
+      MYSQL_ROOT_PASSWORD: hello_database
+
+  web:
+    container_name: hello-app
+    build:
+      context: .
+    volumes:
+      - .:/usr/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db

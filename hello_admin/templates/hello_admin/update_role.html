@@ -1,0 +1,38 @@
+{% extends './base.html' %}
+{% block title %} Update role{% endblock %}
+{% block css %} <link rel="stylesheet" href="/static/css/delete_model.css"> {% endblock %}
+{% block content %}
+    {% include "./navbar.html" %}
+    <main>
+      <form method="post">
+        <div class="model_body">
+            <div class="model_text" style="width: 100%;">
+                <div class="model_text_title">
+                    Update role.
+                </div>
+                <div class="model_text_message" style="margin-block: 2rem;">
+                  <select name="userType" style="
+                          width: 100%;
+                          height: 30px;
+                          font-size: 20px;
+                      ">
+                      <option value="admin" {% if user.userType == 'admin' %} selected {% endif %}>admin</option>
+                      <option value="moderator" {% if user.userType == 'moderator' %} selected {% endif %}>moderator</option>
+                      <option value="official" {% if user.userType == 'official' %} selected {% endif %}>official</option>
+                      <option value="normal" {% if user.userType == 'normal' %} selected {% endif %}>normal</option>
+                    </select>
+              </div>
+            </div>
+        </div>
+        <div class="model_footer">
+                {% csrf_token %}
+                <div class="model_actions">
+                    <div class="cancel_delete" onclick="goBack()" >Cancel</div>
+                    <button type="submit" class="confirm_delete">Done</button>
+                </div>
+
+            </form>
+        </div>
+    </main>
+{% endblock %}
+

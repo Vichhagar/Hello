@@ -1,0 +1,35 @@
+{% extends './base.html' %}
+{% block title %} Delete Account{% endblock %}
+{% block css %} <link rel="stylesheet" href="/static/css/delete_model.css"> {% endblock %}
+{% block content %}
+    {% include "./navbar.html" %}
+    <main>
+        <div class="model_body">
+            <div class="profile_img">
+                {% if request.user.profileImage %}
+                <img src="/images/{{ request.user.profileImage }}" alt="">
+                {% else %}
+                <img src="/static/img/defualt_user.png" alt="">
+                {% endif %}
+            </div>
+            <div class="model_text">
+                <div class="model_text_title">
+                    Delete user.
+                </div>
+                <div class="model_text_message">
+                    When you delete your account, everything related to it will also be removed, including posts, comments, replies, and activities.
+                </div>
+            </div>
+        </div>
+        <div class="model_footer">
+            <form method="post">
+                {% csrf_token %}
+                <div class="model_actions">
+                    <div class="cancel_delete" onclick="goBack()" >Cancel</div>
+                    <button type="submit" class="confirm_delete">Delete</button>
+                </div>
+
+            </form>
+        </div>
+    </main>
+{% endblock %}

@@ -1,0 +1,1 @@
+default_app_config = 'hello_public.apps.HelloPublicConfig'

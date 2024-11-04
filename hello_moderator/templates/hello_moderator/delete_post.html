@@ -1,0 +1,28 @@
+{% extends './base.html' %}
+{% block title %} Delete Post{% endblock %}
+{% block css %} <link rel="stylesheet" href="/static/css/delete_model.css"> {% endblock %}
+{% block content %}
+    {% include "./navbar.html" %}
+    <main>
+      <form method="post">
+        <div class="model_body">
+            <div class="model_text" style="width: 100%;">
+                <div class="model_text_title">
+                    Delete post.
+                </div>
+                <div class="model_text_message">
+                  <textarea id="delete_message" name="why_delete" placeholder="Deletion message..."></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="model_footer">
+                {% csrf_token %}
+                <div class="model_actions">
+                    <div class="cancel_delete" onclick="goBack()" >Cancel</div>
+                    <button type="submit" class="confirm_delete">Delete</button>
+                </div>
+
+            </form>
+        </div>
+    </main>
+{% endblock %}

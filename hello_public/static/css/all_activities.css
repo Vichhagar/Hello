@@ -1,0 +1,345 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
+
+:root {
+    --bg-white: #F6F6F6;
+    --white: #ffffff;
+    --dark: #000000;
+    --red:  #FF0000;
+    --blue: #0064DA;
+    --border: #d6d6d6;
+}
+
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter';
+}
+
+::-webkit-scrollbar {
+    display: none;
+}
+
+body {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--bg-white);
+}
+
+main {
+    width: 60%;
+    margin-inline: auto;
+}
+
+.head_section {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5rem;
+    margin-top: 15%;
+}
+
+.section_title {
+    font-size: 40px;
+    font-weight: bold;
+    width: 33.3%;
+    border-right: #000000 solid 5px;
+}
+
+.section_number_of_activities {
+    width: 33.3%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.opening_activities_number {
+    font-size: 80px;
+    font-weight: bold;
+}
+
+.all_activities_actions {
+    width: 33.3%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.all_activities_actions * {
+    border: #000000 2px solid;
+    width: 60%;
+    text-align: center;
+    padding: 0.3rem 0;
+    margin-block: 0.1rem;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.activity_actions_active {
+    background-color: var(--dark);
+    color: var(--white);
+}
+
+.activity_card {
+    background-color: var(--white);
+    padding: 1rem;
+    border-radius: 10px;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+    margin-block: 5%;
+}
+
+.activity_card_head {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.activity_organizer_information {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.activity_organizer_img {
+    width: 65px;
+    height: 65px;
+}
+
+.activity_organizer_img img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.activity_organizer_fullname {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+/* BODY */
+.activity_card_body {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.activity_informations {
+    width: 50%;
+    border-right: 5px solid #111;
+}
+
+.activity_date {
+    font-size: 20px;
+}
+
+.activity_name {
+    margin-top: 0.8rem;
+    font-size: 25px;
+    font-weight: bolder;
+    text-transform: uppercase;
+}
+
+.activity_particepation_list {
+    margin-block: 1rem;
+}
+
+.particepation_user_preview {
+    display: flex;
+    align-items: end;
+}
+
+.particapation_user_img {
+    width: 25px;
+    height: 25px;
+    margin-right: -5px;
+}
+
+.particapation_user_img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid #fff;
+}
+
+.paticepation_extra {
+    margin-left: 10px;
+}
+
+.activity_actions {
+    width: 50%;
+}
+
+.activity_status {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    padding: 0rem 0.5rem;
+    border: #00a21b solid 3px;
+    border-radius: 50px;
+    font-weight: bold;
+    margin-bottom: 0.3rem;
+    color: #00a21b;
+}
+
+.activity_dot {
+    width: 10px;
+    height: 10px;
+    background-color: #00a21b;
+    border-radius: 50%;
+}
+
+.activity_notification_notice {
+    margin-bottom: 1rem;
+}
+
+.activity_join {
+    width: 100%;
+    text-align: center;
+    border: #111 solid 2px;
+    background-color: #111;
+    color: #fff;
+    font-weight: bold;
+    padding: 0.6rem 0;
+    border-radius: 10px;
+    margin-bottom: 0.5rem;
+    cursor: pointer;
+}
+
+.activity_more_info {
+    display: block;
+    width: 100%;
+    text-align: center;
+    border: #111 solid 2px;
+    background-color: #fff;
+    color: #111;
+    font-weight: bold;
+    padding: 0.6rem 0;
+    border-radius: 10px;
+    margin-block: 0.5rem;
+    cursor: pointer;
+}
+
+#all_activities_list_section, #all_activities_list_section_you_host, #all_activities_list_section_you_join {
+    padding-bottom: 4%;
+}
+
+#all_activities_list_section_you_host, #all_activities_list_section_you_join {
+    display: none;
+}
+
+
+/* FRO SAVED POST */
+.post {
+    margin-block: 5%;
+    width: 100%;
+    padding: 2% 0;
+    background-color: var(--white);
+    border-radius: 5px;
+}
+
+.post_head {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    padding-inline: 2%;
+}
+
+.full_name {
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.full_name img {
+    margin-left: 5px;
+}
+
+.ago {
+    font-size: 14px;
+}
+
+.user_info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.user_img {
+    width: 50px;
+    height: 50px;
+}
+
+.user_img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.post_body {
+    font-size: 17px;
+    line-height: 1.3rem;
+    position: relative;
+    cursor: pointer;
+}
+
+.post_body p {
+    margin-block: 2%;
+    padding-inline: 2%;
+}
+
+.post_body .post_image {
+    width: 100%;
+}
+
+.post_body .post_image img{
+    width: 100%;
+    object-fit: contain;
+}
+
+.post_body .extra_image_flag {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    right: 0;
+    bottom: 0;
+    padding: 5%;
+    font-size: 5vw;
+    background-color: #d6d6d6;
+    width: 200px;
+    height: 200px;
+    opacity: 0.4;
+}
+
+.post_footer {
+    display: flex;
+    justify-content: space-between;
+    padding-inline: 10%;
+    align-items: center;
+    border-top: var(--boder) solid 1px;
+}
+
+.post_footer > * {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-top: 10px;
+    cursor: pointer;
+}
+
+.like_post, .comment_post, .save_post {
+    width: 50px;
+}
+
+.like_post img, .comment_post img, .save_post img {
+    width: 100%;
+}
+
+

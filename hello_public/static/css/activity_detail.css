@@ -1,0 +1,277 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
+
+:root {
+    --bg-white: #F6F6F6;
+    --white: #ffffff;
+    --dark: #000000;
+    --red:  #FF0000;
+    --blue: #0064DA;
+    --border: #d6d6d6;
+}
+
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter';
+}
+
+::-webkit-scrollbar {
+    display: none;
+}
+
+body {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--bg-white);
+    /* display: flex;
+    justify-content: center;
+    align-items: center; */
+}
+
+main {
+    width: 65%;
+    /* height: 75vh; */
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0px 0px 100px 11px rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -45%);
+    
+    /* overflow-y: scroll;
+    overflow-x: hidden; */
+}
+
+.activity_basic_informations {
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.user_information {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.user_information .user_image {
+    width: 50px;
+    height: 50px;
+}
+
+.user_information .user_image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.activity_basic_informations .close_activity_detail_button {
+    width: 30px;
+}
+
+.activity_basic_informations .close_activity_detail_button img {
+    width: 100%;
+    cursor: pointer;
+}
+
+/* activity_detail_body */
+.activity_detail_body {
+    display: flex;
+}
+
+/* activity_main_information */
+.activity_main_information {
+    width: 40%;
+    position: relative;
+    padding-right: 1rem;
+    height: 55vh;
+    overflow-y: hidden;
+}
+
+.date_and_location {
+    display: flex;
+    justify-content: space-between;
+}
+
+.date_and_location .location {
+    font-size: 14px;
+}
+
+.date_and_location .activity_created_time {
+    font-size: 14px;
+}
+
+.activity_main_information .activity_title {
+    font-weight: bolder;
+    font-size: 25px;
+    text-transform: capitalize;
+    margin: 0.4rem 0 1rem 0;
+}
+
+.activity_main_information .activity_description {
+    height: 60vh;
+    overflow-y: scroll;
+}
+
+.activity_main_information .join_leave_activity_action {
+    position: absolute;
+    bottom: 0;
+    background-color: var(--dark);
+    color: var(--white);
+    margin-top: 1rem;
+    text-align: center;
+    padding: 0.5rem;
+    width: 90%;
+    margin-inline: auto;
+    border-radius: 10px;
+    cursor: pointer;
+    border: 2px solid var(--dark);
+    transition: background-color ease-in-out 250ms;
+}
+
+.activity_main_information:hover .join_leave_activity_action:hover {
+
+    background-color: var(--white);
+    color: var(--dark);
+}
+
+/* discussion_panel */
+.discussion_panel {
+    position: relative;
+    width: 35%;
+    padding-inline: 1rem;
+    height: 55vh;
+    overflow-y: hidden;
+    border-inline: 1px solid var(--dark);
+}
+
+.discussion_panel .section_title {
+    font-weight: bold;
+}
+
+.discussion_panel .discussion_area {
+    height: 45vh;
+    overflow-y: scroll;
+}
+
+.discussion_panel .discussion_main_box {
+    display: flex;
+    gap: 10px;
+    align-items: start;
+    margin-block: 0.5rem;
+}
+
+.discussion_main_box .user_img_profile {
+    width: 50px;
+    height: 50px;
+}
+
+.discussion_main_box .user_img_profile img{
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+}
+
+.discussion_main_box .main_discussion_text {
+    max-width: 80%;
+    padding: 0.3rem;
+    background-color: var(--bg-white);
+    border-radius: 10px;
+}
+
+.discussion_main_box .main_discussion_text .user_full_name {
+    font-weight: bold;
+}
+
+.discussion_panel .add_new_message {
+    position: absolute;
+    bottom: 0;
+    display: flex;
+    background-color: var(--white);
+    padding-top: 0.5rem;
+    gap: 5px;
+}
+
+.discussion_panel .add_new_message .logged_in_user_profile {
+    width: 35px;
+    height: 35px;
+}
+
+.discussion_panel .add_new_message .logged_in_user_profile img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+}
+
+.discussion_panel .add_new_message form {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+
+.discussion_panel .add_new_message form input {
+    /* width: 80%; */
+    width: 100%;
+    height: 30px;
+    border-radius: 10px;
+    padding-inline: 0.5rem;
+    border: none;
+    background-color: var(--bg-white);
+}
+
+.discussion_panel .add_new_message form input:focus {
+    outline: none;
+}
+
+#add_message_to_activity {
+    text-transform: capitalize;
+    background-color: var(--dark);
+    color: var(--white);
+    padding-block: 5px;
+    text-align: center;
+    border-radius: 10px;
+    width: 20%;
+    cursor: pointer;
+}
+
+/* paricipants_list_preview */
+.paricipants_list_preview {
+    width: 25%;
+    padding-left: 1rem;
+    height: 55vh;
+    overflow-y: scroll;
+}
+
+.paricipants_list_preview .paticipants_section_title {
+    font-weight: bold;
+}
+
+.paticipant_box {
+    display: flex;
+    gap: 10px;
+    margin-block: 0.5rem;
+    align-items: center;
+}
+
+.paticipant_user_profile {
+    width: 40px;
+    height: 40px;
+}
+
+.paticipant_user_profile img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.paticipant_fullname_username {
+    width: 75%;
+}

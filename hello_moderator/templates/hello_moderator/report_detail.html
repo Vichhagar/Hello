@@ -1,0 +1,135 @@
+{% extends './base.html' %}
+{% block title %}All Post{% endblock %}
+{% block css %} 
+<link rel="stylesheet" href="/static/css/report_deatail.css">
+{% endblock %}
+{% block content %}
+    {% include "./navbar.html" %}
+
+    <main>
+        <div class="post">
+
+            <div class="post_head">
+                <div class="user_info">
+                    <div class="user_img">
+                        {% if post.postType != 'anonymous' %}
+                            
+                            {% if post.userId.profileImage %}
+                            <img src="{{ post.userId.profileImage.url }}" alt="">
+                            {% else %}
+                            <img src="/static/img/defualt_user.png" alt="">
+                            {% endif %}
+
+                        {% else %}
+                           <img src="/static/img/dark.png" alt="">
+                        {% endif %}
+                    </div>
+                    <div class="user_full_name">
+                        <a style="color: #111;" {% if post.postType != 'anonymous' %} href="{% url 'hello_public:other_user_dashboard' post.userId.id %}" {% else %} {% endif %}class="full_name">
+                            {% if post.postType != 'anonymous' %}
+                                {% if post.userId.first_name %} {{ post.userId.first_name }} {% else %} Null {% endif %}
+                                {% if post.userId.last_name %} {{ post.userId.last_name }} {% else %} Null {% endif %}
+                                {% if post.userId.userType == 'official' %} 
+                                    <img src="/static/img/official.png" alt="">
+                                {% endif %}
+                            {% else %}
+                                Anonymous Post
+                            {% endif %}
+                        </a>
+                        <div class="username">
+                            {% if post.postType != 'anonymous' %}
+                                @{{ post.userId.username }}
+                            {% else %}
+                                @ Anonymous Post
+                            {% endif %}
+                        </div>
+                        
+                    </div>
+                    <div class="" style="margin-left: 15px; padding-left: 10px; border-left: #111 2px solid;">
+                        {{ post.postDate|timesince }} <br>
+                        <span class="ago">ago</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="post_body" data-post-id="{{ post.id }}" onclick="go_to_post_detail(this)">
+                <p>{{ post.postText }}</p>
+                {% if post.image_set %}
+                    <div class="post_image">
+                        <img src="{{ post.image_set.first.imageLink.url }}" alt="">
+                        {% if post.image_set.all|length > 1 %}
+                            <div class="extra_image_flag"><span style="
+                                font-size: 15px;
+                                margin-bottom: 100px;
+                                text-align: left;
+                            ">More images</span><br>
+                            <p>+{{ post.image_set.all|length|add:"-1" }}</p></div>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="post_footer" style="
+                display: flex;
+                justify-content: space-between;
+                padding-inline: 0.5rem !important;
+            ">
+                <div class="model_actions">
+                    <div class="cancel_delete" onclick="goBack()" >Back</div>
+                </div>
+                <div class="model_actions">
+                    <a style="color: #111;" href="{% url 'hello_moderator:ban' post.id %}" >Ban This Post</a>
+                </div>
+            </div>
+        </div>
+
+        <div id="report_informations">
+            {% for report in reports %}
+            <div style="margin-block: 3rem;">
+                <div class="user_info">
+                    <div class="user_img">
+                            
+                        {% if report.user.profileImage %}
+                            <img src="{{ report.user.profileImage.url }}" alt="">
+                        {% else %}
+                            <img src="/static/img/defualt_user.png" alt="">
+                        {% endif %}
+
+                    </div>
+                    <div class="user_full_name">
+                        <a style="color: #111;" {% if post.postType != 'anonymous' %} href="{% url 'hello_public:other_user_dashboard' post.userId.id %}" {% else %} {% endif %}class="full_name">
+
+                            {% if report.user.first_name %} {{ report.user.first_name }} {% else %} Null {% endif %}
+                            {% if report.user.last_name %} {{ report.user.last_name }} {% else %} Null {% endif %}
+                            {% if report.user.userType == 'official' %} 
+                                <img src="/static/img/official.png" alt="">
+                            {% endif %}
+                        </a>
+                        <div class="username">
+                            @{{ report.user.username }}
+                        </div>
+                        
+                    </div>
+                    <div class="" style="margin-left: 15px; padding-left: 10px; border-left: #111 2px solid;">
+                        {{ report.created_at|timesince }} <br>
+                        <span class="ago">ago</span>
+                    </div>
+                </div>
+
+                <div class="report_message">
+                    {{ report.Reason }}
+                </div>
+                <a href="{% url 'hello_moderator:delete_report' report.id %}" style="
+                    background-color: #111;
+                    color: #fff;
+                    padding: 0.5rem;
+                    border-radius: 5px;
+                    border: none;
+                    padding-inline: 0.5rem !important;
+                " type="submit" class="confirm_delete">Delete Report</a>
+            </div>
+            {% endfor %}
+        </div>
+    </main>
+{% endblock %}

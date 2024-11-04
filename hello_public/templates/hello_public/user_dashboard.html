@@ -1,0 +1,298 @@
+{% extends './base.html' %}
+{% block title %}{{ request.user }}'s dashboard{% endblock %}
+{% block css %} <link rel="stylesheet" href="/static/css/user_dashboard.css"> {% endblock %}
+{% block content %}
+    {% include "./navbar.html" %}
+    <main>
+        <div class="user_information_section">
+
+            <div class="user_profile_image_and_edit">
+                <div class="user_profile_image">
+                    
+                    {% if user.profileImage %}
+                    <img src="{{ user.profileImage.url }}" alt="" style="object-fit: cover;">
+                    {% else %}
+                    <img src="/static/img/defualt_user.png" alt="">
+                    {% endif %}
+
+                    <div class="edit_user_information" id="user_setting">
+                        <img src="/static/img/setting.png" alt="">
+                    </div>
+                </div>
+                <div id="user_actions">
+                    <a href="{% url 'hello_public:edit_profile' %}">Edit Profile</a>
+                    <a href="{% url 'hello_public:update_password' %}">Edit Password</a>
+                    <a href="{% url 'hello_public:delete_account' %}" class="delete_user">Delete Account</a>
+                </div>
+            </div>
+            <div class="username_and_account_summary">
+                <div class="user_full_name_top">
+                    {% if user.first_name %} {{ user.first_name }} {% else %} Null {% endif %}
+                    {% if user.last_name %} {{ user.last_name }} {% else %} Null {% endif %}
+                    {% if user.userType == 'official' %} 
+                        <img src="/static/img/official.png" alt="">
+                    {% endif %}
+                </div>
+                <div class="username_top">
+                    @{{ user.username }}
+                </div>
+
+                <div class="account_summary">
+                    <span class="number_of_posts"><span class="post_and_activity_number">{{ live_posts|length }}</span> posts</span>
+                    <span class="number_of_activities"><span class="post_and_activity_number">{{ activities_you_host|length }}</span> activities</span>
+                </div>
+                <div class="user_bio">
+                    "{{ user.userBio }}"
+                </div>
+            </div>
+        </div>
+
+        <div class="post_or_activity">
+            <a style="color: #111;" href="{% url 'hello_public:create_post' %}" class="post_icon">
+                <img src="/static/img/post.png" alt="">
+                <p>Create Post</p>
+            </a>
+            <a style="color: #111;" href="{% url 'hello_public:activity_create' %}" class="activity_icon">
+                <img src="/static/img/activity.png" alt="">
+                <p>Create Activity</p>
+            </a>
+        </div>
+
+        <div class="post_section_and_activities">
+            <div class="posts">
+                    {% if live_posts %}
+                    {% for post in live_posts %}
+
+                    <div class="post">
+
+                        <div class="post_head">
+                            <div class="user_info">
+                                <div class="user_img">
+                                    
+                                    {% if user.profileImage %}
+                                    <img src="{{ user.profileImage.url }}" alt="">
+                                    {% else %}
+                                    <img src="/static/img/defualt_user.png" alt="">
+                                    {% endif %}
+
+                                </div>
+                                <div class="user_full_name">
+                                    <a style="color: #111;" href="{% url 'hello_public:other_user_dashboard' post.userId.id %}" class="full_name">
+                                        {% if post.userId.first_name %} {{ post.userId.first_name }} {% else %} Null {% endif %}
+                                        {% if post.userId.last_name %} {{ post.userId.last_name }} {% else %} Null {% endif %}
+                                        {% if post.userId.userType == 'official' %} 
+                                            <img src="/static/img/official.png" alt="">
+                                        {% endif %}
+                                    </a>
+                                    <div class="username">
+                                        @{{ post.userId.username }}
+                                    </div>
+                                </div>
+                            </div>
+                            <img class="post_date" src="/static/img/threedots.png" alt="">
+                                
+                            <div class="post_actions">
+                                <a href="{% url 'hello_public:edit_post' post.id %}">Edit</a>
+                                <a href="{% url 'hello_public:delete_post' post.id %}" class="delete_post">Delete</a>
+                            </div>
+                        </div>
+
+                        <div class="post_body" data-post-id="{{ post.id }}" onclick="go_to_post_detail(this)">
+                            <p>{{ post.postText }}</p>
+                            {% if post.image_set %}
+                                <div class="post_image">
+                                    <img src="/images/{{ post.image_set.first.imageLink }}" alt="">
+                                    {% if post.image_set.all|length > 1 %}
+                                        <div class="extra_image_flag"><span style="
+                                            font-size: 15px;
+                                            margin-bottom: 100px;
+                                            text-align: left;
+                                        ">More images</span><br>
+                                        <p>+{{ post.image_set.all|length|add:"-1" }}</p></div>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="post_footer">
+                            <div class="like_post">
+                                <div class="like_icon" onclick="like_post('{{ post.id }}')">
+                                    {% if post.user_has_liked %}
+                                        <img src="/static/img/liked.png" alt="">
+                                    {% else %}
+                                        <img src="/static/img/like.png" alt="">
+                                    {% endif %}
+                                </div>
+                                <div class="number">{{ post.num_likes }}</div>
+                            </div>
+                            <div class="comment_post">
+                                <div class="like_icon">
+                                    <img src="/static/img/comment.png" alt="">
+                                </div>
+                                <div class="number">{{ post.num_comments }}</div>
+                            </div>
+                            <div class="save_post">
+                                <div class="like_icon" onclick="save_post('{{ post.id }}')">
+                                    {% if post.user_has_saved %}
+                                        <img src="/static/img/saved.png" alt="">
+                                    {% else %}
+                                        <img src="/static/img/save.png" alt="">
+                                    {% endif %}
+                                </div>
+                                <div class="number">{{ post.num_saves }}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% endfor %}
+                    {% else %}
+                    <p>No posts found.</p>
+                    {% endif %}
+            </div>
+
+            <div class="user_activities">
+                <div class="activities_summary">
+                    <div class="activities_summary_action active_activity_sum" id="you_host">Activities You Host</div>
+                    <div class="activities_summary_action" id="you_join">Activities You Join</div>
+                </div>
+
+                <div id="activities_you_host">
+
+                    {% if activities_you_host %}
+                    {% for activity in activities_you_host %}
+                    <div class="activity_card" style="justify-content: space-between; align-items: start;">
+                        <div style="
+                            display: flex;
+                            align-items: center;
+                            gap: 10px;
+                            ">
+                            <div class="activity_author_profile">
+                                
+                                {% if activity.activityOrganizer.profileImage %}
+                                <img src="/images/{{ activity.activityOrganizer.profileImage }}" alt="">
+                                {% else %}
+                                <img src="/static/img/defualt_user.png" alt="">
+                                {% endif %}
+
+                            </div>
+                            <div class="activity_information">
+                                <div class="activity_name" style="cursor: pointer;" data-activity-id="{{ activity.id }}" onclick="go_to_activity_detail(this)">
+                                    {{ activity.activityTitle }}
+                                </div>
+                                <div class="activity_author_username">
+                                    @{{ activity.activityOrganizer.username }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <img class="post_date" src="/static/img/threedots.png" alt="">
+                                    
+                            <div class="post_actions" style="
+                                width: 50%;
+                            ">
+                                <a href="{% url 'hello_public:activity_edit' activity.id %}">Edit</a>
+                                <a href="{% url 'hello_public:delete_activity' activity.id %}" class="delete_post">Delete</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    {% else %}
+                    <p>No activities organized yet.</p>
+                    {% endif %}
+
+                </div>
+
+                <div id="activities_you_join">
+                        {% if activities_you_join %}
+                        {% for activity in activities_you_join %}
+                        <div class="activity_card" data-activity-id="{{ activity.activityId.id }}" onclick="go_to_activity_detail(this)">
+                            <div class="activity_author_profile">
+                                
+                                {% if activity.activityId.activityOrganizer.profileImage %}
+                                <img src="/images/{{ activity.activityId.activityOrganizer.profileImage }}" alt="">
+                                {% else %}
+                                <img src="/static/img/defualt_user.png" alt="">
+                                {% endif %}
+
+                            </div>
+                            <div class="activity_information">
+                                <div class="activity_name">
+                                    {{ activity.activityId.activityTitle }}
+                                </div>
+                                <div class="activity_author_username">
+                                    @{{ activity.activityId.activityOrganizer.username }}
+                                </div>
+                            </div>
+                            <div class="activity_date">
+                                {{ activity.activityId.activityCreateDate|timesince }} <br>
+                                <span class="ago">ago</span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        {% else %}
+                        <p>No activities joined yet.</p>
+                        {% endif %}
+                </div>
+                
+
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        const you_host_button = document.getElementById('you_host');
+        const you_join_button = document.getElementById('you_join');
+
+        const activities_you_host = document.getElementById('activities_you_host');
+        const activities_you_join = document.getElementById('activities_you_join');
+
+        you_host_button.addEventListener('click', () => {
+            if (activities_you_host.style.display == 'block') {
+                activities_you_join.style.display = 'none';
+            } else {
+                you_join_button.classList.remove('active_activity_sum');
+                you_host_button.classList.add('active_activity_sum');
+                activities_you_host.style.display = 'block';
+                activities_you_join.style.display = 'none';
+            }
+        })
+
+        you_join_button.addEventListener('click', () => {
+            if (activities_you_join.style.display == 'block') {
+                activities_you_host.style.display = 'none';
+            } else {
+                you_join_button.classList.add('active_activity_sum');
+                you_host_button.classList.remove('active_activity_sum');
+                activities_you_join.style.display = 'block';
+                activities_you_host.style.display = 'none';
+            }
+        })
+
+        const post_actions_button = document.querySelectorAll('.post_date');
+
+        post_actions_button.forEach(e => {
+            e.addEventListener('click', e => {
+                // console.log(e.target.nextElementSibling.style.display = 'block');
+                if(e.target.nextElementSibling.style.display == 'block') {
+                    e.target.nextElementSibling.style.display = 'none'
+                } else {
+                    e.target.nextElementSibling.style.display = 'block'
+                }
+            })
+        })
+
+        const user_setting_button = document.getElementById('user_setting');
+        const user_setting = document.getElementById('user_actions')
+
+        user_setting_button.addEventListener('click', e => {
+            if(user_setting.style.display == 'block') {
+                user_setting.style.display = 'none';
+            } else {
+                user_setting.style.display = 'block';
+            }
+        })
+
+    </script>
+{% endblock %}

@@ -1,0 +1,24 @@
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<div id="post-details">
+    <!-- Post details here -->
+</div>
+<script>
+    $(document).ready(function() {
+        // Get the post ID from the URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const postId = urlParams.get('post_id');
+
+        // Make an AJAX request to the post detail view
+        $.ajax({
+            url: `/post/${postId}/`,
+            type: 'GET',
+            success: function(response) {
+                // Replace the contents of the post details div with the response HTML
+                $('#post-details').html(response);
+            },
+            error: function(xhr) {
+                // Handle errors here
+            }
+        });
+    });
+</script>

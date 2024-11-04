@@ -1,0 +1,79 @@
+{% extends './base.html' %}
+{% block title %}Home{% endblock %}
+{% block css %} 
+<link rel="stylesheet" href="/static/css/moderator_dashboard.css">
+{% endblock %}
+{% block content %}
+    {% include "./navbar.html" %}
+    <main>
+        <div class="post_and_activity">
+            <a href="{% url 'hello_moderator:posts' %}" class="button_action">
+                <div class="button_title">
+                    Posts
+                </div>
+                <div class="button_summary">
+                    <div class="total_number">{{ posts|length }}</div>
+                    <div class="today_new">{% if recent_posts %}+{{ recent_posts|length }}{% endif %}</div>
+                </div>
+              </a>
+            <a href="{% url 'hello_moderator:activities' %}" class="button_action">
+                <div class="button_title">
+                    Activities
+                </div>
+                <div class="button_summary">
+                  <div class="total_number">{{ activities|length }}</div>
+                  <div class="today_new">{% if recent_activities %}+{{ recent_activities|length }}{% endif %}</div>
+                </div>
+              </a>
+        </div>
+
+        <div class="recent_activities_on_app">
+            <div class="section_title">Recent Post</div>
+            <table>
+                <thead>
+                    <th>Owner</th>
+                    <th>Contant Type</th>
+                    <th></th>
+                </thead>
+                <tbody>
+                  {% for item in recent_posts %}
+                    <tr>
+                        <td class="user">
+                            <div class="user_information">
+                                <div class="user_frame">
+                                    {% if item.userId.profileImage %}
+                                    <img src="{{ item.userId.profileImage.url }}" alt="">
+                                    {% else %}
+                                    <img src="/static/img/defualt_user.png" alt="">
+                                    {% endif %}
+                                </div>
+                                <div class="user_fullname_and_username">
+                                    <div class="userfullname">
+                                      {% if item.userId.first_name %} {{ item.userId.first_name }} {% else %} Null {% endif %}
+                                      {% if item.userId.last_name %} {{ item.userId.last_name }} {% else %} Null {% endif %}
+                                      {% if item.userId.userType == 'official' %} 
+                                          <img src="/static/img/official.png" alt="">
+                                      {% endif %}
+                                    </div>
+                                    <div class="username">
+                                        @ {{ item.userId.username }}
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="item_type">
+                            Post
+                        </td>
+                        <td class="item_link">
+                            <a href="/post/{{ item.id }}">view item</a>
+                        </td>
+                    </tr>
+                  {% empty %}
+                  <p>No Recent Activities.</p>
+                  {% endfor %}
+                </tbody>
+
+            </table>
+        </div>
+    </main>
+{% endblock %}

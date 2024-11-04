@@ -1,0 +1,394 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
+
+:root {
+    --bg-white: #F6F6F6;
+    --white: #ffffff;
+    --dark: #000000;
+    --red:  #FF0000;
+    --blue: #0064DA;
+}
+
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter';
+}
+
+body {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--bg-white);
+}
+
+main {
+    position: absolute;
+    width: 80%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    justify-content: space-between;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0px 0px 100px 11px rgba(0, 0, 0, 0.1);
+}
+
+.images_section {
+    position: relative;
+    width: 70%;
+    height: 70vh;
+    display: flex;
+    align-items: center;
+    object-fit: contain;
+    border-right: 1px var(--dark) solid;
+}
+
+/* .images_section img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    overflow: hidden;
+    display: none;
+} */
+
+.post_img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.post_img img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.close_button {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 30px;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.close_button img {
+    width: 100%;
+}
+
+.post_informations {
+    width: 40%;
+    padding: 1rem;
+}
+
+.top_informations {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+}
+
+.user_informations{
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.user_profile_post_detail {
+    width: 50px;
+}
+
+.user_profile_post_detail img {
+    width: 100%;
+    border-radius: 50%;
+}
+
+.user_full_name {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.post_text {
+    margin-block: 10px;
+}
+
+.add_comment_form {
+    width: 100%;
+    display: flex;
+    gap: 5px;
+}
+
+.add_reply_form {
+    width: 100%;
+    display: flex;
+    gap: 5px;
+}
+
+.post_actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-block: auto;
+    padding: 3px;
+    border-block: 1px solid var(--dark);
+}
+
+.post_actions > * {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    cursor: pointer;
+}
+
+.comments_area {
+    height: 40vh;
+    overflow-y: scroll;
+}
+
+.comments_area::-webkit-scrollbar {
+    width: 10px;
+}
+
+/* Track */
+.comments_area::-webkit-scrollbar-track {
+    display: none;
+}
+
+/* Handle */
+.comments_area::-webkit-scrollbar-thumb {
+    background: #dfdfdf; 
+    border-radius: 10px;
+}
+
+/* Handle on hover */
+.comments_area::-webkit-scrollbar-thumb:hover {
+    background: #b3b3b3; 
+}
+
+.make_comment_input {
+    position: absolute;
+    bottom: 10px;
+    background-color: var(--white);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    width: 35%;
+}
+
+.user_make_comment {
+    width: 35px;
+}
+
+.user_make_comment img {
+    width: 100%;
+    border-radius: 50%;
+}
+
+#commmentText, #add_comment, #replyText {
+    height: 35px;
+}
+
+#commmentText, #replyText {
+    width: 80%;
+    border: none;
+    background-color: var(--bg-white);
+    border-radius: 10px;
+    padding-inline: 5px;
+}
+
+.comment_text {
+    margin-block: 5px;
+}
+
+#replyText {
+    background-color: #fff;
+    /* width: 10vw; */
+}
+
+.make_comment_input button, .main_comment button {
+    border: none;
+    background-color: var(--dark);
+    color: var(--white);
+    border-radius: 10px;
+    width: 70px;
+    cursor: pointer;
+}
+
+.main_comment button {
+    height: 35px;
+}
+
+.comment {
+    display: flex;
+    /* justify-content: space-between; */
+    align-items: start;
+    gap: 10px;
+    margin-block: 0.5rem;
+}
+
+.user_comment_profile {
+    width: 35px;
+    height: 35px;
+}
+
+.user_comment_profile img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+}
+
+.main_comment {
+    background-color: var(--bg-white);
+    border-radius: 10px;
+    padding: 5px;
+    width: 85%;
+    position: relative;
+}
+
+.user_comment_full_name {
+    font-weight: bolder;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 5px;
+}
+
+.my_comment_actions, .my_reply_actions {
+    display: flex;
+    justify-content: end;
+    gap: 5px;
+    text-transform: capitalize;
+    cursor: pointer;
+}
+
+.add_reply_button {
+    position: absolute;
+    right: 0;
+    bottom: -25px;
+    background-color: var(--dark);
+    color: var(--white);
+    /* padding: 1rem; */
+    cursor: pointer;
+    padding-inline: 10px;
+    padding-block: 2px;
+    border-radius: 0 0 5px 5px;
+    text-transform: capitalize;
+}
+
+.comment_reply {
+    float: right;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.comment_actions {
+    display: flex;
+    gap: 5px;
+}
+
+.comment_reply_area {
+    /* border-top: 1px solid #333; */
+    margin-top: 2rem;
+    margin-left: 50px;
+    /* padding-top: 0.5rem; */
+}
+
+.reply_comment, .reply_comment_input {
+    display: flex;
+    margin-block: 1rem;
+    gap: 10px;
+}
+
+.reply_comment_input {
+    display: none;
+}
+
+.img_changer_icon {
+    position: absolute;
+    left: 50%;
+    bottom: 0.5rem;
+    transform: translateX(-50%);
+    
+    display: flex;
+    justify-content: space-between;
+}
+
+.button_with_uri {
+    margin-inline: 10px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: var(--dark);
+    cursor: pointer;
+}
+
+.main_comment_edit, .main_comment_delete, .main_reply_edit, .main_reply_delete {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    /* background-color: rgba(254, 254, 254, 0.82); */
+    background-color: var(--bg-white);
+    border-radius: 10px;
+    width: 40%;
+    margin-inline: auto;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    height: 20vh;
+}
+
+.close_edit_comment_button {
+    width: 30px;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    cursor: pointer;
+}
+
+.close_edit_comment_button img {
+    width: 100%;
+}
+
+.main_comment_edit form {
+    width: 100%;
+}
+
+.main_comment_to_edit {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 90%;
+}
+
+.user_edit_comment {
+    width: 60px;
+}
+
+.user_edit_comment img {
+    width: 100%;
+    border-radius: 50%;
+}
+
+#commmentText_edit {
+    height: 40px;
+    width: 80%;
+    padding: 5px;
+    border-radius: 10px;
+}
+
+.main_comment_to_edit_form button {
+    height: 40px;
+    border-radius: 10px;
+    width: 10%;
+    background-color: var(--dark);
+    color: var(--white);
+    cursor: pointer;
+}

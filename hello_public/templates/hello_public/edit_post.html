@@ -1,0 +1,76 @@
+{% extends './base.html' %}
+{% block title %}Edit Post{% endblock %}
+{% block css %} <link rel="stylesheet" href="/static/css/createPost.css"> {% endblock %}
+{% block content %}
+{% include "./navbar.html" %}
+    <main>
+        <div class="info_section">
+            <div class="title">
+                <div class="user_profile_image">
+                    {% if request.user.profileImage %}
+                    <img src="{{ request.user.profileImage.url }}" alt="">
+                    {% else %}
+                    <img src="/static/img/defualt_user.png" alt="">
+                    {% endif %}
+                </div>
+                <div class="user_informations">
+                    <div class="full_name">
+                        {% if request.user.first_name %} {{ request.user.first_name }} {% else %} Null {% endif %}
+                        {% if request.user.last_name %} {{ request.user.last_name }} {% else %} Null {% endif %}
+                        {% if request.user.userType == 'official' %} 
+                            <img src="/static/img/official.png" alt="">
+                        {% endif %}
+                    </div>
+                    <div class="username">@{{ request.user.username }}</div>
+                </div>
+            </div>
+
+            <div class="main_form">
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="post_text">
+                        <textarea name="postText" id="post_text" type="text" placeholder="write your post here...">{{ post.postText }}</textarea>
+                    </div>
+                    <div id="post_images_preview">
+                        {% for image in images %}
+                            <div class="old_image">
+                                <div class="post_image_old">
+                                    <label class="image_input">
+                                        <div class="preview_area">
+                                            <img src="{{ image.imageLink.url }}" alt="">
+                                        </div>
+                                        <input type="checkbox" name="{{ image.id }}_remove">
+                                    </label>
+                                </div>
+                            </div>
+                        {% endfor %}
+
+                        <div class="post_image">
+                            <label class="image_input">
+                                <input type="file" hidden name="post_image" class="post_image_input" onchange="update_image_preview(this)">
+                                <div class="preview_area">
+                                    <img id="add_new_image_icon" src="/static/img/add_image.png" alt="">
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                    <!-- <div class="checkbox" id="policy_check" name="policy_check">
+                        <input type="checkbox" id="policy_check_box" name="policy_check_box" value="draft">
+                        <label for="policy_check_box">Anonymous post<br><span class="link_to_policy">The post will be review by the moderator</span></label>
+                    </div> -->
+
+                    <input type="submit" id="form_submit" value="Save">
+                </form>
+            </div>
+        </div>
+        <div class="cover">
+            <!-- <img src="./static/img/background.jpg" alt=""> -->
+            <a href="#" onclick="goBack()"  class="close_create_post">
+                <img src="/static/img/close_button.png" alt="">
+            </a>
+        </div>
+    </main>
+{% endblock %}
+{% block script %}
+    <script src="/static/js/create_post.js"></script>
+{% endblock %}
