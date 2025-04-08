@@ -143,9 +143,9 @@ def logout_user(request):
 def request_account(request):
     if request.method == 'POST':
         email = request.POST['email']
-        if not email.endswith('.apiu.edu'):
-            messages.error(request, 'Only email addresses ending with ".apiu.edu" are allowed.')
-            return render(request, 'hello_public/requestAccount.html')
+        # if not email.endswith('.apiu.edu'):
+        #     messages.error(request, 'Only email addresses ending with ".apiu.edu" are allowed.')
+        #     return render(request, 'hello_public/requestAccount.html')
         
         hashed_email = hashlib.sha256(email.encode('utf-8')).hexdigest()
 
